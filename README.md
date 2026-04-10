@@ -88,10 +88,65 @@ Add the project's key to the `"pinned"` array at the top of `projects.json`:
 
 Pinned projects rotate in the spotlight carousel on the home page. They need `highlights` and at least one `screenshot` to look good.
 
-### Screenshot Tips
+### Capturing Screenshots & Video
 
-- Use Playwright to auto-capture: serve the project locally, write a quick capture script
-- First screenshot in the array is used as the pinned spotlight thumbnail
-- Aim for 1280x800 viewport for web apps, 1400x900 for complex UIs
-- Save to `screenshots/<project-key>/` folder
-- For non-web projects (PowerShell, CLI tools), create an HTML mock of the UI
+All screenshots are auto-captured using Playwright from localhost. Here's the process:
+
+**Setup:**
+```bash
+cd portfolio-site
+npm install playwright --no-save    # install
+npx playwright install chromium      # if browsers outdated
+# clean up after: rm -rf node_modules
+```
+
+**Steps for a new project:**
+1. Figure out how to run the project locally (check its `package.json` for `dev`/`start` scripts)
+2. Start the server(s), verify with `curl http://localhost:<port>/`
+3. Write a Playwright script to navigate and capture key views
+4. Save screenshots to `screenshots/<project-key>/`
+5. Update `projects.json` screenshots array (first image = pinned thumbnail)
+6. Clean up: remove capture script, `rm -rf node_modules`
+
+**Playwright capture script template:**
+```js
+const { chromium } = require('playwright');
+const path = require('path');
+
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
+
+  await page.goto('http://localhost:<PORT>', { waitUntil: 'networkidle', timeout: 15000 });
+  await page.waitForTimeout(3000);
+  await page.screenshot({ path: 'screenshots/<project-key>/main.png' });
+
+  // Navigate to other views, click buttons, etc.
+  // await page.click('button:has-text("Something")');
+  // await page.screenshot({ path: 'screenshots/<project-key>/feature.png' });
+
+  await browser.close();
+})();
+```
+
+**Tips:**
+- Use 1280x800 viewport for web apps, 1400x900 for complex UIs
+- For non-web projects (PowerShell, CLI tools), create an HTML mock of the UI and screenshot that
+- For videos: use Playwright's `recordVideo` option on the browser context
+- Videos support `.webm` and `.mp4` — they render as autoplay loops in the gallery
+- First screenshot in the array is used as the pinned spotlight thumbnail — use a PNG, not a large GIF/video
+- Trim white frames from video with ffmpeg: `ffmpeg -ss 0.5 -i input.webm -c:v libx264 -crf 23 -pix_fmt yuv420p output.mp4`
+
+**Project-specific notes:**
+
+| Project | How to run | Port | Notes |
+|---|---|---|---|
+| Snipboard | Manual screenshots already exist | — | GIF is 4.9MB, keep last in array |
+| PicklePairs | Manual screenshots already exist | — | 11 screenshots |
+| Claude Harry's UI | `npx http-server dist/renderer -p 8082` | 8082 | Inject mock content via `page.evaluate()` |
+| SGU Player | `npx http-server . -p 8081` | 8081 | Wait 8s for RSS feed. Click `.year-header`, `.ep-card` |
+| TranscribeTutorials | Server: `cd server && node src/app.js` Client: `cd client && npm start` | 3004 | Run `npm rebuild better-sqlite3` if node changed |
+| Pokemon Card Tracker | Server: `cd server && npm run dev` Client: `cd client && npm run dev` | 4004 | Needs PostgreSQL running |
+| NAS Installer Helper | No web UI | — | Create HTML mock of the Windows Forms layout |
+| Portfolio Site | `python -m http.server 8080` | 8080 | Use `record-promo.js` for video with cursor + zooms |
