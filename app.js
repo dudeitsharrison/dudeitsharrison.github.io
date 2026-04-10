@@ -1583,19 +1583,46 @@
 
   addCmd('stats', 'show page view stats', () => {
     const id = 'stats-' + Date.now();
-    fetch(`https://${GC_SITE}.goatcounter.com/counter/*.json`)
-      .then(r => r.ok ? r.json() : Promise.reject('API error'))
-      .then(data => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const total = data.count_unique || data.count || 0;
-        el.innerHTML = `<div class="search-header">unique visitors — ${total.toLocaleString()} total</div><div class="search-match">full dashboard: <a href="https://${GC_SITE}.goatcounter.com" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
-        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      })
-      .catch(() => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = `<div class="search-header">stats</div><div class="search-match">dashboard: <a href="https://${GC_SITE}.goatcounter.com" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
-      });
+    const gcUrl = `https://${GC_SITE}.goatcounter.com`;
+    const paths = [
+      { key: 'home', path: '/' },
+      ...Object.keys(state.data.categories).map(c => ({ key: c, path: '/#/' + c })),
+      ...Object.keys(state.data.projects).map(p => {
+        const proj = state.data.projects[p];
+        return { key: p, path: '/#/' + proj.category + '/' + p };
+      }),
+    ];
+
+    // Fetch total + per-page counts
+    const fetchTotal = fetch(`${gcUrl}/counter/*.json`).then(r => r.ok ? r.json() : { count: '0', count_unique: '0' }).catch(() => ({ count: '0', count_unique: '0' }));
+    const fetchPages = Promise.all(paths.map(({ key, path }) =>
+      fetch(`${gcUrl}/counter/${encodeURIComponent(path)}.json`)
+        .then(r => r.ok ? r.json() : { count: '0', count_unique: '0' })
+        .then(d => ({ key, views: parseInt(d.count) || 0, unique: parseInt(d.count_unique) || 0 }))
+        .catch(() => ({ key, views: 0, unique: 0 }))
+    ));
+
+    Promise.all([fetchTotal, fetchPages]).then(([totals, results]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const totalViews = parseInt(totals.count) || 0;
+      const totalUnique = parseInt(totals.count_unique) || 0;
+      const withViews = results.filter(r => r.unique > 0).sort((a, b) => b.unique - a.unique);
+      const maxCount = withViews.length ? withViews[0].unique : 1;
+
+      let html = `<div class="search-header">visitor stats — ${totalUnique} unique · ${totalViews} total views</div>`;
+      if (withViews.length === 0) {
+        html += `<div class="search-match" style="margin:4px 0">no page-level data yet (stats populate over time)</div>`;
+      } else {
+        withViews.forEach(({ key, views, unique }) => {
+          const bar = '\u2588'.repeat(Math.max(1, Math.round(unique / maxCount * 25)));
+          html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${key.padEnd(26)} ${bar} ${unique} unique / ${views} views</div>`;
+        });
+      }
+      html += `<div class="search-match" style="margin-top:8px">dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
+      el.innerHTML = html;
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
     return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
 
