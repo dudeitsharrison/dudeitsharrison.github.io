@@ -1587,41 +1587,46 @@
 
   function trackView(pageKey) {
     const viewed = getViewed();
-    if (viewed.has(pageKey)) return; // already counted this browser
+    if (viewed.has(pageKey)) return;
     viewed.add(pageKey);
     saveViewed(viewed);
-    fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/up`).catch(() => {});
+    fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/up/`).catch(() => {});
   }
 
   async function getViewCount(pageKey) {
     try {
-      const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}`);
+      const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/`);
       if (!res.ok) return 0;
       const data = await res.json();
       return data.count || 0;
     } catch { return 0; }
   }
 
-  addCmd('stats', 'show page view stats', async () => {
+  addCmd('stats', 'show page view stats', (args, ctx) => {
+    // Return a placeholder, then fill it async
+    const id = 'stats-' + Date.now();
     const pages = ['home', ...Object.keys(state.data.categories), ...Object.keys(state.data.projects)];
-    const counts = await Promise.all(pages.map(async (p) => {
-      const count = await getViewCount(p);
-      return { page: p, count };
-    }));
-    const total = counts.reduce((s, c) => s + c.count, 0);
-    const withViews = counts.filter(c => c.count > 0).sort((a, b) => b.count - a.count);
-    let html = `<div class="search-results">`;
-    html += `<div class="search-header">unique visitors — ${total} total</div>`;
-    if (withViews.length === 0) {
-      html += `<div class="search-match">no views recorded yet</div>`;
-    } else {
-      withViews.forEach(({ page, count }) => {
-        const bar = '█'.repeat(Math.min(30, Math.round(count / Math.max(1, withViews[0].count) * 30)));
-        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${page.padEnd(28)} ${bar} ${count}</div>`;
-      });
-    }
-    html += `</div>`;
-    return { type: 'html', text: html };
+    Promise.all(pages.map(p => getViewCount(p).then(count => ({ page: p, count })))).then(counts => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const total = counts.reduce((s, c) => s + c.count, 0);
+      const withViews = counts.filter(c => c.count > 0).sort((a, b) => b.count - a.count);
+      let html = `<div class="search-header">unique visitors — ${total} total</div>`;
+      if (withViews.length === 0) {
+        html += `<div class="search-match">no views recorded yet (visit some pages first)</div>`;
+      } else {
+        withViews.forEach(({ page, count }) => {
+          const bar = '█'.repeat(Math.min(30, Math.round(count / Math.max(1, withViews[0].count) * 30)));
+          html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${page.padEnd(28)} ${bar} ${count}</div>`;
+        });
+      }
+      el.innerHTML = html;
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }).catch(() => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = 'error fetching stats';
+    });
+    return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
 
   function handleRoute({ animate = true } = {}) {
