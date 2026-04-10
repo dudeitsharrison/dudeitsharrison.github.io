@@ -1584,45 +1584,26 @@
   addCmd('stats', 'show page view stats', () => {
     const id = 'stats-' + Date.now();
     const gcUrl = `https://${GC_SITE}.goatcounter.com`;
-    const paths = [
-      { key: 'home', path: '/' },
-      ...Object.keys(state.data.categories).map(c => ({ key: c, path: '/#/' + c })),
-      ...Object.keys(state.data.projects).map(p => {
-        const proj = state.data.projects[p];
-        return { key: p, path: '/#/' + proj.category + '/' + p };
-      }),
-    ];
 
-    // Fetch total + per-page counts
-    const fetchTotal = fetch(`${gcUrl}/counter/*.json`).then(r => r.ok ? r.json() : { count: '0', count_unique: '0' }).catch(() => ({ count: '0', count_unique: '0' }));
-    const fetchPages = Promise.all(paths.map(({ key, path }) =>
-      fetch(`${gcUrl}/counter/${encodeURIComponent(path)}.json`)
-        .then(r => r.ok ? r.json() : { count: '0', count_unique: '0' })
-        .then(d => ({ key, views: parseInt(d.count) || 0, unique: parseInt(d.count_unique) || 0 }))
-        .catch(() => ({ key, views: 0, unique: 0 }))
-    ));
-
-    Promise.all([fetchTotal, fetchPages]).then(([totals, results]) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const totalViews = parseInt(totals.count) || 0;
-      const totalUnique = parseInt(totals.count_unique) || 0;
-      const withViews = results.filter(r => r.unique > 0).sort((a, b) => b.unique - a.unique);
-      const maxCount = withViews.length ? withViews[0].unique : 1;
-
-      let html = `<div class="search-header">visitor stats — ${totalUnique} unique · ${totalViews} total views</div>`;
-      if (withViews.length === 0) {
-        html += `<div class="search-match" style="margin:4px 0">no page-level data yet (stats populate over time)</div>`;
-      } else {
-        withViews.forEach(({ key, views, unique }) => {
-          const bar = '\u2588'.repeat(Math.max(1, Math.round(unique / maxCount * 25)));
-          html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${key.padEnd(26)} ${bar} ${unique} unique / ${views} views</div>`;
-        });
-      }
-      html += `<div class="search-match" style="margin-top:8px">dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
-      el.innerHTML = html;
-      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    });
+    fetch(`${gcUrl}/counter/${encodeURIComponent('/')}.json`)
+      .then(r => r.ok ? r.json() : { count: '0', count_unique: '0' })
+      .then(data => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const views = parseInt(data.count) || 0;
+        const unique = parseInt(data.count_unique) || 0;
+        const bar = '\u2588'.repeat(Math.max(1, Math.min(30, unique)));
+        let html = `<div class="search-header">visitor stats</div>`;
+        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:6px 0">  unique visitors   ${bar} ${unique}</div>`;
+        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:2px 0">  total pageviews   ${'\u2588'.repeat(Math.max(1, Math.min(30, views)))} ${views}</div>`;
+        html += `<div class="search-match" style="margin-top:10px">full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
+        el.innerHTML = html;
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      })
+      .catch(() => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="search-match">error loading stats — <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">view dashboard</a></div>`;
+      });
     return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
 
