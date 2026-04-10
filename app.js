@@ -1578,63 +1578,29 @@
     location.hash = hash;
   }
 
-  // --- View counter (unique visitors via localStorage + free API) ---
-  const COUNTER_NS = 'dudeitsharrison';
-  const COUNTER_API = 'https://api.counterapi.dev/v1';
-  const viewedKey = 'portfolio:viewed-v2';
-  const getViewed = () => { try { return new Set(JSON.parse(localStorage.getItem(viewedKey) || '[]')); } catch { return new Set(); } };
-  const saveViewed = (set) => { try { localStorage.setItem(viewedKey, JSON.stringify([...set])); } catch {} };
+  // --- View counter (GoatCounter) ---
+  const GC_SITE = 'dudeitsharrison';
 
-  function trackView(pageKey) {
-    const viewed = getViewed();
-    if (viewed.has(pageKey)) return;
-    viewed.add(pageKey);
-    saveViewed(viewed);
-    fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/up/`).catch(() => {});
-  }
-
-  async function getViewCount(pageKey) {
-    try {
-      const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/`);
-      if (!res.ok) return 0;
-      const data = await res.json();
-      return data.count || 0;
-    } catch { return 0; }
-  }
-
-  addCmd('stats', 'show page view stats', (args, ctx) => {
-    // Return a placeholder, then fill it async
+  addCmd('stats', 'show page view stats', () => {
     const id = 'stats-' + Date.now();
-    const pages = ['home', ...Object.keys(state.data.categories), ...Object.keys(state.data.projects)];
-    Promise.all(pages.map(p => getViewCount(p).then(count => ({ page: p, count })))).then(counts => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const total = counts.reduce((s, c) => s + c.count, 0);
-      const withViews = counts.filter(c => c.count > 0).sort((a, b) => b.count - a.count);
-      let html = `<div class="search-header">unique visitors — ${total} total</div>`;
-      if (withViews.length === 0) {
-        html += `<div class="search-match">no views recorded yet (visit some pages first)</div>`;
-      } else {
-        withViews.forEach(({ page, count }) => {
-          const bar = '█'.repeat(Math.min(30, Math.round(count / Math.max(1, withViews[0].count) * 30)));
-          html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${page.padEnd(28)} ${bar} ${count}</div>`;
-        });
-      }
-      el.innerHTML = html;
-      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }).catch(() => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = 'error fetching stats';
-    });
+    fetch(`https://${GC_SITE}.goatcounter.com/counter/*.json`)
+      .then(r => r.ok ? r.json() : Promise.reject('API error'))
+      .then(data => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const total = data.count_unique || data.count || 0;
+        el.innerHTML = `<div class="search-header">unique visitors — ${total.toLocaleString()} total</div><div class="search-match">full dashboard: <a href="https://${GC_SITE}.goatcounter.com" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      })
+      .catch(() => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="search-header">stats</div><div class="search-match">dashboard: <a href="https://${GC_SITE}.goatcounter.com" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
+      });
     return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
 
   function handleRoute({ animate = true } = {}) {
     const route = parseHash();
-    // Track unique view
-    const pageKey = route.view === 'project' ? route.project : route.view === 'folder' ? route.category : 'home';
-    trackView(pageKey);
-
     if (route.view === 'home') { renderHome(); return; }
     if (route.view === 'folder') { renderFolder(route.category, { animate }); return; }
     if (route.view === 'project') { renderProject(route.project, { animate }); return; }
