@@ -210,12 +210,76 @@
 ║  H A R R I S O N · E N G L E    —   tools for efficiency ║
 ╚══════════════════════════════════════════════════════════╝`;
 
+  function getShareData() {
+    const base = 'https://dudeitsharrison.github.io';
+    if (state.view === 'project' && state.project) {
+      const p = state.data.projects[state.project];
+      return {
+        title: p.name + ' — Harrison Engle',
+        text: p.tagline || p.description || '',
+        url: base + '#/' + p.category + '/' + state.project,
+      };
+    }
+    if (state.view === 'folder' && state.category) {
+      const cat = state.data.categories[state.category];
+      return {
+        title: (cat?.name || state.category) + ' — Harrison Engle',
+        text: cat?.description || '',
+        url: base + '#/' + state.category,
+      };
+    }
+    return {
+      title: 'Harrison Engle — tools for efficiency',
+      text: state.data?.meta?.tagline || '',
+      url: base,
+    };
+  }
+
+  function updateMeta() {
+    const d = getShareData();
+    document.title = d.title;
+    const setMeta = (prop, val) => {
+      let el = document.querySelector(`meta[property="${prop}"]`);
+      if (el) el.setAttribute('content', val);
+    };
+    setMeta('og:title', d.title);
+    setMeta('og:description', d.text);
+    setMeta('og:url', d.url);
+    // Set og:image to first screenshot if on a project page
+    if (state.view === 'project' && state.project) {
+      const p = state.data.projects[state.project];
+      const img = (p.screenshots || []).find(s => /\.(png|jpg|gif)$/i.test(s));
+      if (img) setMeta('og:image', 'https://dudeitsharrison.github.io/' + img);
+    }
+  }
+
+  function shareButton() {
+    const btn = h('button', {
+      class: 'share-btn',
+      'aria-label': 'Share this page',
+      onclick: async () => {
+        const data = getShareData();
+        if (navigator.share) {
+          try { await navigator.share(data); } catch {}
+        } else {
+          await navigator.clipboard.writeText(data.url).catch(() => {});
+          btn.textContent = 'copied!';
+          setTimeout(() => { btn.innerHTML = '&#9741; share'; }, 1500);
+        }
+      },
+    });
+    btn.innerHTML = '&#9741; share';
+    return btn;
+  }
+
   function headerBlock() {
-    const wrap = h('div');
+    const wrap = h('div', { class: 'header-wrap' });
     wrap.appendChild(h('pre', { class: 'brand', text: BRAND_ASCII }));
+    wrap.appendChild(shareButton());
     if (state.data?.meta?.tagline) {
       wrap.appendChild(h('p', { class: 'brand-sub', text: '// ' + state.data.meta.tagline }));
     }
+    updateMeta();
     return wrap;
   }
 

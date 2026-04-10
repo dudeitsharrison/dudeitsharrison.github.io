@@ -94,6 +94,28 @@ hr.rule {
 
 /* ---------- Header / brand ---------- */
 
+.header-wrap {
+  position: relative;
+}
+.share-btn {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--fg);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+.share-btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
 .brand {
   margin: 0 0 20px;
   white-space: pre;
