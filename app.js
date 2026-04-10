@@ -1581,7 +1581,7 @@
   // --- View counter (unique visitors via localStorage + free API) ---
   const COUNTER_NS = 'dudeitsharrison';
   const COUNTER_API = 'https://api.counterapi.dev/v1';
-  const viewedKey = 'portfolio:viewed-pages';
+  const viewedKey = 'portfolio:viewed-v2';
   const getViewed = () => { try { return new Set(JSON.parse(localStorage.getItem(viewedKey) || '[]')); } catch { return new Set(); } };
   const saveViewed = (set) => { try { localStorage.setItem(viewedKey, JSON.stringify([...set])); } catch {} };
 
