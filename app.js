@@ -370,11 +370,14 @@
     if (proj.screenshots?.length) {
       const thumbSrc = proj.screenshots[0];
       if (/\.(webm|mp4)$/i.test(thumbSrc)) {
-        inner.appendChild(h('video', {
+        const vid = h('video', {
           class: 'sp-thumb',
           src: thumbSrc,
           autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
-        }));
+          style: 'visibility:hidden',
+        });
+        vid.addEventListener('loadeddata', () => { vid.style.visibility = 'visible'; });
+        inner.appendChild(vid);
       } else {
         inner.appendChild(h('img', {
           class: 'sp-thumb',
@@ -595,7 +598,9 @@
           const vid = h('video', {
             src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
             class: 'shot-video',
+            style: 'visibility:hidden',
           });
+          vid.addEventListener('loadeddata', () => { vid.style.visibility = 'visible'; });
           const wrap = h('div', {
             class: isWide ? 'shot wide' : 'shot',
             style: 'cursor:pointer',
