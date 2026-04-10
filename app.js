@@ -596,7 +596,11 @@
             src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
             class: 'shot-video',
           });
-          const wrap = h('div', { class: isWide ? 'shot wide' : 'shot' }, vid);
+          const wrap = h('div', {
+            class: isWide ? 'shot wide' : 'shot',
+            style: 'cursor:pointer',
+            onclick: () => openLightbox(src, `${proj.name} video`),
+          }, vid);
           shots.appendChild(wrap);
         } else {
           const img = h('img', { src, alt: `${proj.name} screenshot`, loading: 'lazy' });
@@ -624,11 +628,15 @@
 
   function openLightbox(src, alt) {
     closeLightbox();
+    const isVideo = /\.(webm|mp4)$/i.test(src);
+    const media = isVideo
+      ? h('video', { src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true', controls: 'true', style: 'max-width:90vw;max-height:90vh;' })
+      : h('img', { src, alt });
     const box = h('div', {
       class: 'lightbox',
       id: 'lightbox',
-      onclick: closeLightbox,
-    }, h('img', { src, alt }));
+      onclick: (e) => { if (e.target === box) closeLightbox(); },
+    }, media);
     document.body.appendChild(box);
     const onKey = (e) => { if (e.key === 'Escape') closeLightbox(); };
     document.addEventListener('keydown', onKey);
