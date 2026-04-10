@@ -1552,8 +1552,58 @@
     location.hash = hash;
   }
 
+  // --- View counter (unique visitors via localStorage + free API) ---
+  const COUNTER_NS = 'dudeitsharrison';
+  const COUNTER_API = 'https://api.counterapi.dev/v1';
+  const viewedKey = 'portfolio:viewed-pages';
+  const getViewed = () => { try { return new Set(JSON.parse(localStorage.getItem(viewedKey) || '[]')); } catch { return new Set(); } };
+  const saveViewed = (set) => { try { localStorage.setItem(viewedKey, JSON.stringify([...set])); } catch {} };
+
+  function trackView(pageKey) {
+    const viewed = getViewed();
+    if (viewed.has(pageKey)) return; // already counted this browser
+    viewed.add(pageKey);
+    saveViewed(viewed);
+    fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}/up`).catch(() => {});
+  }
+
+  async function getViewCount(pageKey) {
+    try {
+      const res = await fetch(`${COUNTER_API}/${COUNTER_NS}/${pageKey}`);
+      if (!res.ok) return 0;
+      const data = await res.json();
+      return data.count || 0;
+    } catch { return 0; }
+  }
+
+  addCmd('stats', 'show page view stats', async () => {
+    const pages = ['home', ...Object.keys(state.data.categories), ...Object.keys(state.data.projects)];
+    const counts = await Promise.all(pages.map(async (p) => {
+      const count = await getViewCount(p);
+      return { page: p, count };
+    }));
+    const total = counts.reduce((s, c) => s + c.count, 0);
+    const withViews = counts.filter(c => c.count > 0).sort((a, b) => b.count - a.count);
+    let html = `<div class="search-results">`;
+    html += `<div class="search-header">unique visitors — ${total} total</div>`;
+    if (withViews.length === 0) {
+      html += `<div class="search-match">no views recorded yet</div>`;
+    } else {
+      withViews.forEach(({ page, count }) => {
+        const bar = '█'.repeat(Math.min(30, Math.round(count / Math.max(1, withViews[0].count) * 30)));
+        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono)">  ${page.padEnd(28)} ${bar} ${count}</div>`;
+      });
+    }
+    html += `</div>`;
+    return { type: 'html', text: html };
+  });
+
   function handleRoute({ animate = true } = {}) {
     const route = parseHash();
+    // Track unique view
+    const pageKey = route.view === 'project' ? route.project : route.view === 'folder' ? route.category : 'home';
+    trackView(pageKey);
+
     if (route.view === 'home') { renderHome(); return; }
     if (route.view === 'folder') { renderFolder(route.category, { animate }); return; }
     if (route.view === 'project') { renderProject(route.project, { animate }); return; }
