@@ -1,12 +1,12 @@
 {
   "meta": {
     "owner": "Harrison Engle",
-    "tagline": "Indie software built solo. Click around.",
+    "tagline": "Software built with AI-assisted engineering. Click around.",
     "contact_email": "harrisonengle@gmail.com",
     "github": "https://github.com/dudeitsharrison",
-    "pinned_rotation_ms": 6000
+    "pinned_rotation_ms": 3500
   },
-  "pinned": ["snipboard", "picklepairs"],
+  "pinned": ["snipboard", "picklepairs", "pokemon-card-tracker"],
   "categories": {
     "apps": {
       "name": "Apps",
@@ -44,14 +44,14 @@
         "Offline-first with a lifetime license"
       ],
       "screenshots": [
-        "screenshots/snipboard-example.gif",
         "screenshots/snip1.png",
         "screenshots/snip2.png",
         "screenshots/snip3.png",
         "screenshots/snip4.png",
-        "screenshots/snip5.png"
+        "screenshots/snip5.png",
+        "screenshots/snipboard-example.gif"
       ],
-      "tags": ["Windows", "Productivity", "$9.99", "Lifetime license"],
+      "tags": ["Windows", "Python", "Qt", "Screenshot", "Clipboard", "System Tray", "Productivity", "Hotkeys", "Dark Theme", "Offline"],
       "links": [
         { "label": "Buy Pro on Gumroad — $9.99", "url": "https://harrisonengle.gumroad.com/l/okjwv", "primary": true },
         { "label": "Get Free version on Gumroad", "url": "https://harrisonengle.gumroad.com/l/akvydw" }
@@ -64,6 +64,12 @@
       "logo": "screenshots/picklepairs/logo.png",
       "tagline": "Pickleball tournament manager — pair players, run rounds, track stats.",
       "description": "A full tournament management web app built for pickleball clubs and casual groups. Plan rounds with smart pairing, run matches with a big-touch score keypad, track leaderboards and player stats, keep match history, and export results. Designed mobile-first so it works courtside on a phone. Free to use at picklepairs.com.",
+      "highlights": [
+        "Smart pairing that avoids repeat partners",
+        "Big-touch score keypad designed for courtside use",
+        "Leaderboards, player stats, and match history",
+        "Mobile-first — works on any phone"
+      ],
       "screenshots": [
         "screenshots/picklepairs/planner.png",
         "screenshots/picklepairs/round-view.png",
@@ -77,7 +83,7 @@
         "screenshots/picklepairs/notifications.png",
         "screenshots/picklepairs/export-panel.png"
       ],
-      "tags": ["Web app", "Pickleball", "Tournaments", "Mobile-friendly", "Free"],
+      "tags": ["Web App", "JavaScript", "Mobile-First", "Pickleball", "Tournaments", "Leaderboard", "Statistics", "PWA", "Free"],
       "links": [
         { "label": "Open picklepairs.com", "url": "https://www.picklepairs.com", "primary": true }
       ],
@@ -102,7 +108,7 @@
         "screenshots/claude-harry-ui/main.png",
         "screenshots/claude-harry-ui/project2.png"
       ],
-      "tags": ["Windows", "Electron", "Claude Code", "Developer tool"],
+      "tags": ["Windows", "Electron", "TypeScript", "Claude Code", "Terminal", "Syntax Highlighting", "Markdown", "Developer Tool", "Desktop App"],
       "availability": "wip",
       "progress": {
         "core": 80,
@@ -124,7 +130,7 @@
         "screenshots/sgu-player/episodes.png",
         "screenshots/sgu-player/playing.png"
       ],
-      "tags": ["PWA", "Podcast", "Audio", "Offline"],
+      "tags": ["PWA", "JavaScript", "Podcast", "Audio", "Offline", "Dark Theme", "RSS", "Mobile-First", "Space UI"],
       "links": [
         { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/SGUPlayer", "primary": true }
       ]
@@ -142,7 +148,7 @@
         "screenshots/transcribe-tutorials/transcription-view.png",
         "screenshots/transcribe-tutorials/search-filter.png"
       ],
-      "tags": ["React", "Node.js", "AssemblyAI", "Video", "Education"],
+      "tags": ["React", "Node.js", "Express", "AssemblyAI", "Video", "Transcription", "Chapters", "Search", "Education", "HTML Export"],
       "availability": "wip",
       "progress": {
         "core": 70,
@@ -158,6 +164,12 @@
       "status": "beta",
       "tagline": "Track, scan, and manage your Pokemon card collection across languages.",
       "description": "A full-stack web app for managing Pokemon card collections with multilingual support. Browse thousands of cards across sets, scan cards with your camera, track your collection progress, view stats, and explore Pokemon names across 9 languages. Features three view modes (grid, carousel, table), smart filtering, and a polished Material UI design.",
+      "highlights": [
+        "Browse cards in grid, carousel, or table view",
+        "Camera-based card scanning",
+        "Pokemon names across 9 languages",
+        "Collection tracking with stats dashboard"
+      ],
       "screenshots": [
         "screenshots/pokemon-tracker/home.png",
         "screenshots/pokemon-tracker/browse-grid.png",
@@ -166,7 +178,7 @@
         "screenshots/pokemon-tracker/set-detail.png",
         "screenshots/pokemon-tracker/languages.png"
       ],
-      "tags": ["React", "Node.js", "PostgreSQL", "Pokemon", "Multilingual"],
+      "tags": ["React", "TypeScript", "Node.js", "PostgreSQL", "Prisma", "Pokemon", "Multilingual", "Camera Scan", "Material UI", "Collection Tracker"],
       "availability": "wip",
       "progress": {
         "core": 85,
@@ -185,7 +197,7 @@
       "screenshots": [
         "screenshots/nas-installer-helper/main.png"
       ],
-      "tags": ["Windows", "PowerShell", "NAS", "Utility", "MIT"],
+      "tags": ["Windows", "PowerShell", "NAS", "Networking", "Admin", "Installer Fix", "System Utility", "Open Source", "MIT"],
       "links": [
         { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/NAS_Installer_Helper", "primary": true }
       ]

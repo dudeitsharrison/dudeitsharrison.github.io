@@ -207,7 +207,7 @@
 
   const BRAND_ASCII =
 `╔══════════════════════════════════════════════════════════╗
-║  H A R R I S O N · E N G L E    —    indie software      ║
+║  H A R R I S O N · E N G L E    —    AI-assisted dev       ║
 ╚══════════════════════════════════════════════════════════╝`;
 
   function headerBlock() {
@@ -229,8 +229,6 @@
     const { line: l1, typePromise: p1 } = promptLine(BOOT_URL);
     SCREEN.appendChild(l1);
     await p1;
-
-    // remove trailing cursor on first line
     l1.querySelector('.cursor')?.remove();
 
     await sleep(120);
@@ -332,12 +330,14 @@
     wrap.appendChild(list);
 
     state.pinned.index = Math.min(state.pinned.index, pinnedIds.length - 1);
-    paintSpotlight(pinnedIds);
+    // Paint immediately using the element reference (not getElementById,
+    // which fails because wrap isn't in the DOM yet)
+    paintSpotlight(pinnedIds, spotlight);
     return wrap;
   }
 
-  function paintSpotlight(pinnedIds) {
-    const sp = document.getElementById('spotlight');
+  function paintSpotlight(pinnedIds, spOverride) {
+    const sp = spOverride || document.getElementById('spotlight');
     if (!sp) return;
     const id = pinnedIds[state.pinned.index];
     const proj = state.data.projects[id];
@@ -347,21 +347,33 @@
     sp.appendChild(h('span', { class: 'sp-meta', text: `pinned ${state.pinned.index + 1}/${pinnedIds.length}` }));
 
     const inner = h('div', { class: 'sp-inner' });
-    inner.appendChild(h('p', { class: 'sp-eyebrow', text: (state.data.categories[proj.category]?.name || proj.category) + ' · ' + (proj.status || 'project') }));
+    const statusVal = proj.status || 'project';
+    inner.appendChild(h('p', { class: 'sp-eyebrow' },
+      document.createTextNode((state.data.categories[proj.category]?.name || proj.category) + ' · '),
+      h('span', { class: 'status-badge status-' + statusVal, text: statusVal }),
+    ));
     inner.appendChild(h('div', { class: 'sp-titlewrap' },
       makeLogo(proj, 'md'),
       h('h2', { class: 'sp-title', text: proj.name }),
     ));
     inner.appendChild(h('p', { class: 'sp-tag', text: proj.tagline || '' }));
-    if (proj.reviews?.length) {
-      const r = proj.reviews[0];
-      inner.appendChild(h('p', { class: 'sp-review', text: '“' + r.quote + '”' }));
-    } else if (proj.highlights?.length) {
+    if (proj.highlights?.length) {
       const ul = h('ul', { class: 'sp-highlights' });
       proj.highlights.slice(0, 4).forEach((line) => {
         ul.appendChild(h('li', { text: line }));
       });
       inner.appendChild(ul);
+    } else if (proj.reviews?.length) {
+      const r = proj.reviews[0];
+      inner.appendChild(h('p', { class: 'sp-review', text: '”' + r.quote + '”' }));
+    }
+    if (proj.screenshots?.length) {
+      inner.appendChild(h('img', {
+        class: 'sp-thumb',
+        src: proj.screenshots[0],
+        alt: proj.name + ' screenshot',
+        loading: 'eager',
+      }));
     }
     inner.appendChild(h('a', {
       class: 'sp-cta',
@@ -433,12 +445,31 @@
           class: 'row',
           href: `#/${catId}/${pid}`,
           tabindex: '0',
-          onclick: (e) => { e.preventDefault(); navigate(`#/${catId}/${pid}`); },
+          onclick: (e) => { if (!e.target.closest('.row-tag')) { e.preventDefault(); navigate(`#/${catId}/${pid}`); } },
         },
           makeLogo(p, 'sm'),
           h('span', { class: 'name', text: p.name }),
           h('span', { class: 'desc', text: p.tagline || '' }),
         );
+        if (p.tags?.length) {
+          const tagsRow = h('div', { class: 'row-tags' });
+          p.tags.slice(0, 8).forEach((t) => {
+            tagsRow.appendChild(h('span', {
+              class: 'row-tag',
+              text: '#' + t.replace(/\s+/g, ''),
+              onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const termField = document.querySelector('.term-field');
+                if (termField) {
+                  termField.value = 'tag ' + t;
+                  termField.closest('form')?.dispatchEvent(new Event('submit'));
+                }
+              },
+            }));
+          });
+          row.appendChild(tagsRow);
+        }
         list.appendChild(h('li', {}, row));
       });
       SCREEN.appendChild(list);
@@ -795,14 +826,22 @@
 
   addCmd('clear', 'clear the terminal log', () => ({ type: 'clear' }));
 
-  addCmd('whoami', 'about harrison', () => ({
-    type: 'out',
-    text: [
-      'harrison engle — indie software developer',
-      'ships windows apps, web tools, and whatever else is fun',
-      '"' + (state.data.meta?.tagline || '') + '"',
-    ],
-  }));
+  addCmd('whoami', 'about harrison', () => {
+    const projects = Object.keys(state.data.projects).length;
+    const live = Object.values(state.data.projects).filter((p) => p.status === 'live').length;
+    return { type: 'html', text: `<div class="whoami">
+<div class="whoami-name">harrison engle</div>
+<div class="whoami-role">developer · AI-assisted engineering</div>
+<div class="whoami-bio">I build the tools I wish existed. Most of my projects start as "I need this" and turn into something other people use too. My workflow: define the spec, spin up specialized AI agents, review every diff, handle edge cases, and stress-test before release. Think technical lead managing a team of junior engineers that happen to be Claude — architecting, orchestrating, shipping.</div>
+<div class="whoami-stats">
+  <span>${projects} projects</span> · <span>${live} shipped</span> · <span>windows, web, electron, react</span>
+</div>
+<div class="whoami-links">
+  <span>email: ${state.data.meta?.contact_email || 'harrisonengle@gmail.com'}</span>
+  <span>github: <a href="${state.data.meta?.github || '#'}" target="_blank">dudeitsharrison</a></span>
+</div>
+</div>` };
+  });
 
   addCmd(['contact', 'email'], 'show contact email', () => {
     const email = state.data.meta?.contact_email || 'harrisonengle@gmail.com';
@@ -848,6 +887,304 @@
     type: 'out',
     text: 'you can check out any time you like, but you can never leave.',
   }));
+
+  addCmd(['tag', 'tags', '#'], 'filter by tag (tag react, tag #PWA)', (args) => {
+    if (!args.length) {
+      // List all unique tags with counts
+      const tagMap = {};
+      for (const p of Object.values(state.data.projects)) {
+        (p.tags || []).forEach((t) => {
+          const key = t.toLowerCase();
+          if (!tagMap[key]) tagMap[key] = { name: t, count: 0 };
+          tagMap[key].count++;
+        });
+      }
+      const sorted = Object.values(tagMap).sort((a, b) => b.count - a.count);
+      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      let html = '<div class="search-results"><div class="search-header">all tags (' + sorted.length + ')</div><div style="display:flex;flex-wrap:wrap;gap:6px 10px;">';
+      sorted.forEach((t) => {
+        html += `<span class="row-tag" style="font-size:12px;cursor:pointer;opacity:0.8;" onclick="document.querySelector('.term-field').value='tag ${esc(t.name)}';document.querySelector('.term-input').dispatchEvent(new Event('submit',{bubbles:true}))">#${esc(t.name.replace(/\\s+/g, ''))} <span style="opacity:0.5">(${t.count})</span></span>`;
+      });
+      html += '</div></div>';
+      return { type: 'html', text: html };
+    }
+    const query = args.join(' ').replace(/^#/, '').toLowerCase();
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const matches = [];
+    for (const [id, p] of Object.entries(state.data.projects)) {
+      const hit = (p.tags || []).find((t) => t.toLowerCase().includes(query));
+      if (hit) matches.push({ id, name: p.name, category: p.category, tag: hit, tagline: p.tagline || '' });
+    }
+    if (!matches.length) return { type: 'out', text: `no projects tagged "${query}"` };
+    let html = `<div class="search-results"><div class="search-header">${matches.length} project${matches.length > 1 ? 's' : ''} tagged "<mark>${esc(query)}</mark>"</div>`;
+    matches.forEach((m) => {
+      html += `<div class="search-result"><a class="search-name" href="#/${m.category}/${m.id}">${esc(m.name)}</a> <span class="row-tag" style="font-size:11px;">#${esc(m.tag.replace(/\s+/g, ''))}</span><div class="search-match">${esc(m.tagline)}</div></div>`;
+    });
+    html += '</div>';
+    return { type: 'html', text: html };
+  });
+
+  addCmd(['search', 'grep', 'find'], 'search projects (search <query>)', (args) => {
+    const query = args.join(' ').trim();
+    if (!query) return { type: 'err', text: 'usage: search <query>' };
+    const q = query.toLowerCase();
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const highlight = (text, maxLen) => {
+      const i = text.toLowerCase().indexOf(q);
+      if (i === -1) return null;
+      const start = Math.max(0, i - 40);
+      const end = Math.min(text.length, i + q.length + 40);
+      let snippet = (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+      // limit to one line
+      snippet = snippet.replace(/\n/g, ' ');
+      if (maxLen && snippet.length > maxLen) snippet = snippet.slice(0, maxLen) + '…';
+      const escaped = esc(snippet);
+      const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return escaped.replace(re, '<mark>$1</mark>');
+    };
+
+    const results = [];
+    for (const [id, p] of Object.entries(state.data.projects)) {
+      const fields = [
+        { label: 'name', value: p.name || '' },
+        { label: 'tagline', value: p.tagline || '' },
+        { label: 'description', value: p.description || '' },
+        { label: 'tags', value: (p.tags || []).join(', ') },
+        { label: 'status', value: p.status || '' },
+      ];
+      const matches = [];
+      for (const f of fields) {
+        const h = highlight(f.value, 80);
+        if (h) matches.push({ label: f.label, html: h });
+      }
+      if (matches.length) results.push({ id, name: p.name, category: p.category, matches });
+    }
+
+    if (!results.length) return { type: 'out', text: `no results for "${query}"` };
+
+    let html = `<div class="search-results">`;
+    html += `<div class="search-header">${results.length} project${results.length > 1 ? 's' : ''} matching "<mark>${esc(query)}</mark>"</div>`;
+    for (const r of results) {
+      html += `<div class="search-result">`;
+      html += `<a class="search-name" href="#/${r.category}/${r.id}">${esc(r.name)}</a>`;
+      for (const m of r.matches) {
+        html += `<div class="search-match"><span class="search-field">${m.label}:</span> ${m.html}</div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+    return { type: 'html', text: html };
+  });
+
+  // --- Claude Code mode ---
+  const CLAUDE_PROMPT = 'harrison> ';
+  const claudeState = { active: false, tokens: 0, cost: 0, msgs: 0, startTime: 0 };
+
+  const claudeResponses = [
+    "I'll analyze the codebase structure first. Let me read the key files to understand the architecture before making any changes.",
+    "Looking at this, I'd recommend refactoring the state management into a reducer pattern. Want me to proceed?",
+    "I've identified 3 potential issues: a race condition in the async handler, an unguarded null access on line 42, and a missing error boundary. Let me fix all three.",
+    "The test coverage for this module is at 34%. I'll write unit tests for the critical paths first, then we can expand from there.",
+    "I can see the performance bottleneck — the component re-renders on every keystroke because the filter function creates a new array reference. Let me memoize it.",
+    "I've scanned the project dependencies. Two packages have known CVEs — let me update them and verify nothing breaks.",
+    "This function has O(n²) complexity because of the nested find(). I'll replace it with a Map lookup for O(n).",
+    "The error handling here silently swallows exceptions. I'll add proper error boundaries and logging so failures surface in dev.",
+    "Good question. The API returns stale data because the cache TTL is set to 5 minutes. We should either reduce it or add cache invalidation on writes.",
+    "I'll set up the database migration first, then update the model layer, then adjust the API endpoints. Three files total.",
+  ];
+  const claudeErrors = [
+    'Error: Your rate limit has been reached. Please wait 2 minutes before trying again.',
+    'Error: Claude is at capacity right now. Please try again in a few moments.',
+    'Error: Context window limit reached (1,000,000 tokens). Use /compact to reduce context.',
+    'Error: Connection interrupted. Retrying in 5 seconds...',
+    'Error: API key has exceeded its monthly spend limit. Check your plan at console.anthropic.com.',
+  ];
+
+  function enterClaudeMode(logEl) {
+    claudeState.active = true;
+    claudeState.tokens = 0;
+    claudeState.cost = 0;
+    claudeState.msgs = 0;
+    claudeState.startTime = Date.now();
+    // Update prompt prefix
+    const prefix = document.querySelector('.term-input .prompt-prefix');
+    if (prefix) prefix.textContent = CLAUDE_PROMPT;
+    const field = document.querySelector('.term-field');
+    if (field) field.placeholder = 'message claude... (/help for commands, /exit to quit)';
+    const hint = document.querySelector('.term-hint');
+    if (hint) hint.textContent = '/help · /compact · /cost · /status · /model · /exit or Esc to quit';
+    // Boot animation
+    const folder = currentPath();
+    const entry = h('div', { class: 'entry' });
+    let html = `<div class="claude-session">`;
+    html += `<div class="claude-line" style="animation-delay:0ms"><span class="claude-dim">╭──────────────────────────────────────────────╮</span></div>`;
+    html += `<div class="claude-line" style="animation-delay:100ms"><span class="claude-dim">│</span> <span class="claude-blue">Claude Code</span> <span class="claude-dim">v1.0.30 (claude-opus-4-6)</span>       <span class="claude-dim">│</span></div>`;
+    html += `<div class="claude-line" style="animation-delay:200ms"><span class="claude-dim">╰──────────────────────────────────────────────╯</span></div>`;
+    html += `<div class="claude-line" style="animation-delay:400ms"><span class="claude-dim">/</span> <span class="claude-green">Allow</span> access to <span class="claude-white">${folder}</span> ? <span class="claude-dim">(y/n)</span></div>`;
+    html += `<div class="claude-line" style="animation-delay:700ms"><span class="claude-green">✓ Access granted</span></div>`;
+    html += `<div class="claude-line" style="animation-delay:900ms"> </div>`;
+    html += `<div class="claude-line" style="animation-delay:1000ms"><span class="claude-dim">tips: /help for commands, /compact to save context, /exit to quit</span></div>`;
+    html += `</div>`;
+    entry.appendChild(h('div', { class: 'out out-html', html }));
+    logEl.appendChild(entry);
+    entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function exitClaudeMode(logEl) {
+    claudeState.active = false;
+    const prefix = document.querySelector('.term-input .prompt-prefix');
+    if (prefix) prefix.textContent = PROMPT;
+    const field = document.querySelector('.term-field');
+    if (field) field.placeholder = 'type `help` and hit enter';
+    const hint = document.querySelector('.term-hint');
+    if (hint) hint.textContent = 'type `help` for commands · `search <query>` or `tag <name>` to filter · ↑/↓ for history';
+    const entry = h('div', { class: 'entry' });
+    const dur = Math.round((Date.now() - claudeState.startTime) / 1000);
+    let html = `<div class="claude-session">`;
+    html += `<div class="claude-line"><span class="claude-dim">───────────────────────────────────────────</span></div>`;
+    html += `<div class="claude-line"><span class="claude-blue">Claude:</span> Goodbye! Session ended.</div>`;
+    html += `<div class="claude-line"><span class="claude-dim">messages: ${claudeState.msgs} · tokens: ${claudeState.tokens.toLocaleString()} · cost: $${claudeState.cost.toFixed(2)} · duration: ${dur}s</span></div>`;
+    html += `</div>`;
+    entry.appendChild(h('div', { class: 'out out-html', html }));
+    logEl.appendChild(entry);
+    entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function handleClaudeCommand(raw, logEl) {
+    const entry = h('div', { class: 'entry' });
+    entry.appendChild(h('div', { class: 'echo' },
+      h('span', { class: 'prompt-prefix', text: CLAUDE_PROMPT, style: 'color:#c084fc;font-weight:600' }),
+      h('span', { text: raw }),
+    ));
+
+    const cmd = raw.trim().toLowerCase();
+    let html = '';
+
+    if (cmd === '/exit' || cmd === '/logout' || cmd === '/quit') {
+      logEl.appendChild(entry);
+      exitClaudeMode(logEl);
+      return;
+    } else if (cmd === '/help') {
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-blue">Claude Code Commands</span></div>
+<div class="claude-line"><span class="claude-dim">  /help</span>        show this help</div>
+<div class="claude-line"><span class="claude-dim">  /compact</span>     compact conversation to save context</div>
+<div class="claude-line"><span class="claude-dim">  /cost</span>        show session cost and token usage</div>
+<div class="claude-line"><span class="claude-dim">  /status</span>      show connection status</div>
+<div class="claude-line"><span class="claude-dim">  /model</span>       show current model info</div>
+<div class="claude-line"><span class="claude-dim">  /clear</span>       clear the terminal</div>
+<div class="claude-line"><span class="claude-dim">  /exit</span>        end claude session (or press Esc)</div>
+<div class="claude-line"> </div>
+<div class="claude-line"><span class="claude-dim">Any other text is sent as a message to Claude.</span></div>
+</div>`;
+    } else if (cmd === '/compact') {
+      claudeState.tokens = Math.round(claudeState.tokens * 0.3);
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-green">✓ Compacted conversation</span></div>
+<div class="claude-line"><span class="claude-dim">context reduced to ${claudeState.tokens.toLocaleString()} tokens (saved ~70%)</span></div>
+</div>`;
+    } else if (cmd === '/cost') {
+      const dur = Math.round((Date.now() - claudeState.startTime) / 1000);
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-blue">Session Cost</span></div>
+<div class="claude-line"><span class="claude-dim">  messages:</span>  ${claudeState.msgs}</div>
+<div class="claude-line"><span class="claude-dim">  tokens:</span>    ${claudeState.tokens.toLocaleString()} (in + out)</div>
+<div class="claude-line"><span class="claude-dim">  cost:</span>      $${claudeState.cost.toFixed(2)}</div>
+<div class="claude-line"><span class="claude-dim">  duration:</span>  ${dur}s</div>
+<div class="claude-line"><span class="claude-dim">  context:</span>   ${'█'.repeat(Math.round(claudeState.tokens / 60000))}${'░'.repeat(Math.max(0, 16 - Math.round(claudeState.tokens / 60000)))} ${Math.round(claudeState.tokens / 10000)}% of 1M</div>
+</div>`;
+    } else if (cmd === '/status') {
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-green">● Connected</span></div>
+<div class="claude-line"><span class="claude-dim">  model:</span>     claude-opus-4-6</div>
+<div class="claude-line"><span class="claude-dim">  context:</span>   1,000,000 tokens</div>
+<div class="claude-line"><span class="claude-dim">  tools:</span>     Read, Edit, Write, Bash, Grep, Glob</div>
+<div class="claude-line"><span class="claude-dim">  cwd:</span>       ${currentPath()}</div>
+</div>`;
+    } else if (cmd === '/model') {
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-blue">Model:</span> claude-opus-4-6 (1M context)</div>
+<div class="claude-line"><span class="claude-dim">provider: Anthropic · max output: 32K tokens · vision: yes</span></div>
+</div>`;
+    } else if (cmd === '/clear') {
+      logEl.appendChild(entry);
+      clear(logEl);
+      return;
+    } else if (cmd.startsWith('/')) {
+      html = `<div class="claude-session">
+<div class="claude-line"><span class="claude-err">Unknown command: ${cmd}. Type /help for available commands.</span></div>
+</div>`;
+    } else if (COMMANDS[cmd.split(/\s+/)[0]]) {
+      // It's a regular terminal command — run it and note it
+      const parts = raw.trim().split(/\s+/);
+      const cmdName = parts[0].toLowerCase();
+      const cmdArgs = parts.slice(1);
+      const termCmd = COMMANDS[cmdName];
+      let result;
+      try { result = termCmd.run(cmdArgs, { raw: raw.trim(), name: cmdName }); } catch {}
+      if (result) {
+        if (result.type === 'navigate') {
+          html = `<div class="claude-session"><div class="claude-line"><span class="claude-dim">⚡ terminal:</span> running \`${cmd}\`</div></div>`;
+          entry.appendChild(h('div', { class: 'out out-html', html }));
+          logEl.appendChild(entry);
+          navigate(result.hash);
+          return;
+        } else if (result.type === 'open') {
+          window.open(result.url, '_blank', 'noopener,noreferrer');
+          html = `<div class="claude-session"><div class="claude-line"><span class="claude-dim">⚡ terminal:</span> opening ${result.url}</div></div>`;
+        } else if (result.type === 'html') {
+          html = `<div class="claude-session"><div class="claude-line"><span class="claude-dim">⚡ terminal:</span> running \`${cmd}\`</div></div>`;
+          entry.appendChild(h('div', { class: 'out out-html', html }));
+          entry.appendChild(h('div', { class: 'out out-html', html: result.text }));
+          logEl.appendChild(entry);
+          entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return;
+        } else if (result.type === 'clear') {
+          clear(logEl);
+          return;
+        } else {
+          const text = result.text;
+          const lines = Array.isArray(text) ? text.join('\n') : String(text ?? '');
+          html = `<div class="claude-session"><div class="claude-line"><span class="claude-dim">⚡ terminal:</span> running \`${cmd}\`</div></div>`;
+          entry.appendChild(h('div', { class: 'out out-html', html }));
+          entry.appendChild(h('pre', { class: result.type === 'err' ? 'out err' : 'out', text: lines }));
+          logEl.appendChild(entry);
+          entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return;
+        }
+      }
+    } else {
+      // Regular message — simulate Claude responding
+      claudeState.msgs++;
+      const willError = Math.random() < 0.15;
+      if (willError) {
+        const err = claudeErrors[Math.floor(Math.random() * claudeErrors.length)];
+        html = `<div class="claude-session">
+<div class="claude-line" style="animation-delay:0ms"><span class="claude-thinking">⏳ Thinking...</span></div>
+<div class="claude-line" style="animation-delay:1800ms"><span class="claude-err">${err}</span></div>
+</div>`;
+      } else {
+        const resp = claudeResponses[Math.floor(Math.random() * claudeResponses.length)];
+        const inTok = 800 + Math.floor(Math.random() * 12000);
+        const outTok = 200 + Math.floor(Math.random() * 2000);
+        claudeState.tokens += inTok + outTok;
+        claudeState.cost += (inTok * 0.000003 + outTok * 0.000015);
+        const dur = (1.5 + Math.random() * 8).toFixed(1);
+        html = `<div class="claude-session">
+<div class="claude-line" style="animation-delay:0ms"><span class="claude-thinking">⏳ Thinking...</span></div>
+<div class="claude-line" style="animation-delay:2000ms"><span class="claude-blue">Claude:</span> ${resp}</div>
+<div class="claude-line" style="animation-delay:2400ms"> </div>
+<div class="claude-line" style="animation-delay:2600ms"><span class="claude-dim">─ tokens: ${inTok.toLocaleString()} in · ${outTok.toLocaleString()} out · cost: $${(inTok * 0.000003 + outTok * 0.000015).toFixed(3)} · ${dur}s</span></div>
+</div>`;
+      }
+    }
+
+    if (html) entry.appendChild(h('div', { class: 'out out-html', html }));
+    logEl.appendChild(entry);
+    entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  addCmd('claude', 'start a claude code session', () => ({ type: 'claude-enter' }), { hidden: true });
 
   // --- hidden easter eggs ---
   addCmd('sudo', 'hidden', (args) => ({
@@ -952,6 +1289,12 @@
   }
 
   function executeCommand(raw, logEl) {
+    // Claude mode intercept
+    if (claudeState.active) {
+      handleClaudeCommand(raw, logEl);
+      return;
+    }
+
     const parts = raw.split(/\s+/);
     const name = (parts[0] || '').toLowerCase();
     const args = parts.slice(1);
@@ -979,6 +1322,11 @@
 
     if (result) {
       if (result.type === 'clear') { clear(logEl); return; }
+      if (result.type === 'claude-enter') {
+        logEl.appendChild(entry);
+        enterClaudeMode(logEl);
+        return;
+      }
       if (result.type === 'navigate') {
         logEl.appendChild(entry);
         navigate(result.hash);
@@ -987,6 +1335,8 @@
       if (result.type === 'open') {
         window.open(result.url, '_blank', 'noopener,noreferrer');
         entry.appendChild(h('pre', { class: 'out', text: `opening ${result.url}` }));
+      } else if (result.type === 'html') {
+        entry.appendChild(h('div', { class: 'out out-html', html: result.text }));
       } else {
         const text = result.text;
         const lines = Array.isArray(text) ? text.join('\n') : String(text ?? '');
@@ -1025,7 +1375,7 @@
       }
     });
     wrap.appendChild(form);
-    wrap.appendChild(h('p', { class: 'term-hint', text: 'type `help` for commands · ↑/↓ for history' }));
+    wrap.appendChild(h('p', { class: 'term-hint', text: 'type `help` for commands · `search <query>` or `tag <name>` to filter · ↑/↓ for history' }));
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1042,6 +1392,11 @@
     });
 
     field.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && claudeState.active) {
+        e.preventDefault();
+        exitClaudeMode(log);
+        return;
+      }
       if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (!cmdHistory.list.length) return;

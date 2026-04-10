@@ -205,10 +205,10 @@ hr.rule {
 }
 .dir .row {
   display: grid;
-  grid-template-columns: 28px minmax(140px, 1fr) auto;
+  grid-template-columns: 34px minmax(140px, 1fr) auto;
   gap: 12px;
   align-items: center;
-  padding: 8px 8px;
+  padding: 10px 8px;
   cursor: pointer;
   text-decoration: none;
   color: var(--fg);
@@ -222,8 +222,28 @@ hr.rule {
   outline-offset: -2px;
   background: var(--hover-bg);
 }
-.dir .icon { font-size: 14px; line-height: 1; }
+.dir .icon { font-size: 18px; line-height: 1; }
 .dir .name { font-weight: 600; }
+.dir .row-tags {
+  grid-column: 2 / -1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: -4px;
+}
+.dir .row-tag {
+  font-size: 11px;
+  color: var(--fg-dim);
+  opacity: 0.65;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dir .row-tag:hover {
+  opacity: 1;
+  color: var(--fg);
+  text-decoration: underline;
+}
 .dir .desc {
   color: var(--fg-dim);
   font-size: 13px;
@@ -248,13 +268,24 @@ hr.rule {
   padding: 18px 20px;
   background: var(--spotlight-bg);
   position: relative;
-  height: 270px;
+  height: 280px;
   overflow: hidden;
 }
 .spotlight .sp-inner {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+.spotlight .sp-thumb {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  width: 180px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--fg-dim);
+  opacity: 0.85;
 }
 .spotlight .sp-inner {
   animation: spFade 300ms ease-out both;
@@ -269,6 +300,53 @@ hr.rule {
   text-transform: uppercase;
   color: var(--fg-dim);
   margin: 0 0 6px;
+}
+.status-badge {
+  font-weight: 700;
+}
+.status-live {
+  color: var(--fg);
+  background: linear-gradient(
+    90deg,
+    var(--fg) 0%,
+    var(--fg) 35%,
+    #4ade80 45%,
+    #22ff77 50%,
+    #4ade80 55%,
+    var(--fg) 65%,
+    var(--fg) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-green 4s ease-in-out infinite;
+}
+@keyframes shimmer-green {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
+.status-beta {
+  color: var(--fg);
+  background: linear-gradient(
+    90deg,
+    var(--fg) 0%,
+    var(--fg) 35%,
+    #fb923c 45%,
+    #ff7b00 50%,
+    #fb923c 55%,
+    var(--fg) 65%,
+    var(--fg) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-orange 4s ease-in-out infinite;
+}
+@keyframes shimmer-orange {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
 }
 .spotlight .sp-titlewrap {
   display: flex;
@@ -358,7 +436,7 @@ hr.rule {
   overflow: hidden;
   font-family: var(--font-mono);
 }
-.logo.sm { width: 26px; height: 26px; font-size: 14px; }
+.logo.sm { width: 30px; height: 30px; font-size: 16px; }
 .logo.md { width: 44px; height: 44px; font-size: 22px; }
 .logo.lg { width: 72px; height: 72px; font-size: 38px; }
 .logo img {
@@ -412,6 +490,8 @@ hr.rule {
 .project .desc {
   font-size: 14px;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   margin: 0 0 18px;
   max-width: 68ch;
 }
@@ -776,6 +856,127 @@ hr.rule {
   letter-spacing: 0.03em;
 }
 
+/* ---------- Search results ---------- */
+
+.out-html {
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 4px 0;
+}
+.out-html mark {
+  background: rgba(245, 158, 11, 0.35);
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 1px;
+}
+.search-header {
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.search-result {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.search-result:last-child { border-bottom: none; }
+.search-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.search-name:hover { background: var(--fg); color: var(--bg); text-decoration: none; }
+.search-match {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin: 2px 0 2px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-field {
+  color: var(--fg-dim);
+  opacity: 0.6;
+  margin-right: 4px;
+}
+
+/* ---------- Claude session ---------- */
+
+.claude-session {
+  font: 13px/1.7 var(--mono, monospace);
+  padding: 4px 0;
+}
+.claude-line {
+  opacity: 0;
+  animation: claudeReveal 0.15s ease forwards;
+}
+@keyframes claudeReveal {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.claude-dim { color: var(--fg-dim); opacity: 0.6; }
+.claude-blue { color: #60a5fa; font-weight: 700; }
+.claude-green { color: #4ade80; font-weight: 600; }
+.claude-purple { color: #c084fc; font-weight: 600; }
+.claude-white { color: var(--fg); font-weight: 600; }
+.claude-err { color: #f87171; }
+.claude-thinking {
+  color: var(--fg-dim);
+  animation: claudePulse 1.2s ease-in-out infinite;
+}
+@keyframes claudePulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.claude-cursor {
+  animation: claudeBlink 1s step-end infinite;
+}
+@keyframes claudeBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ---------- Whoami ---------- */
+
+.whoami {
+  padding: 4px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.whoami-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.whoami-role {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 8px;
+}
+.whoami-bio {
+  max-width: 100%;
+  margin-bottom: 10px;
+}
+.whoami-stats {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 4px;
+}
+.whoami-links {
+  font-size: 12px;
+  color: var(--fg-dim);
+  display: flex;
+  gap: 16px;
+}
+.whoami-links a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ---------- Found secrets (easter egg tracker) ---------- */
 
 .secrets {
@@ -864,7 +1065,7 @@ hr.rule {
   .brand { font-size: 9px; }
   .project h1 { font-size: 22px; }
   .spotlight .sp-title { font-size: 18px; }
-  .spotlight { padding: 16px; height: 300px; }
+  .spotlight { padding: 16px; height: 360px; }
   .spotlight .sp-meta { position: static; margin-bottom: 6px; display: block; }
   .dir .row {
     grid-template-columns: 20px 1fr;
