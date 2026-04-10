@@ -370,14 +370,11 @@
     if (proj.screenshots?.length) {
       const thumbSrc = proj.screenshots[0];
       if (/\.(webm|mp4)$/i.test(thumbSrc)) {
-        const vid = h('video', {
-          class: 'sp-thumb',
-          src: thumbSrc,
-          autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
-          style: 'visibility:hidden',
-        });
-        vid.addEventListener('loadeddata', () => { vid.style.visibility = 'visible'; });
-        inner.appendChild(vid);
+        const vid = document.createElement('video');
+        vid.className = 'sp-thumb';
+        vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+        vid.addEventListener('canplay', () => { inner.appendChild(vid); }, { once: true });
+        vid.src = thumbSrc;
       } else {
         inner.appendChild(h('img', {
           class: 'sp-thumb',
@@ -595,12 +592,12 @@
         const isVideo = /\.(webm|mp4)$/i.test(src);
         const isWide = /\.(gif|webm|mp4)$/i.test(src);
         if (isVideo) {
-          const vid = h('video', {
-            src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
-            class: 'shot-video',
-            style: 'visibility:hidden',
-          });
-          vid.addEventListener('loadeddata', () => { vid.style.visibility = 'visible'; });
+          const vid = document.createElement('video');
+          vid.className = 'shot-video';
+          vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+          vid.style.visibility = 'hidden';
+          vid.addEventListener('canplay', () => { vid.style.visibility = 'visible'; }, { once: true });
+          vid.src = src;
           const wrap = h('div', {
             class: isWide ? 'shot wide' : 'shot',
             style: 'cursor:pointer',
