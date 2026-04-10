@@ -1381,7 +1381,7 @@
     old.replaceWith(renderSecretsSection());
   }
 
-  function executeCommand(raw, logEl) {
+  async function executeCommand(raw, logEl) {
     // Claude mode intercept
     if (claudeState.active) {
       handleClaudeCommand(raw, logEl);
@@ -1409,7 +1409,33 @@
     if (!cmd) {
       result = { type: 'err', text: `command not found: ${name}. try \`help\`.` };
     } else {
-      try { result = cmd.run(args, { raw, name }); }
+      try {
+        result = cmd.run(args, { raw, name });
+        if (result && typeof result.then === 'function') {
+          // Async command — show loading, then render result
+          logEl.appendChild(entry);
+          entry.appendChild(h('pre', { class: 'out', text: 'loading...' }));
+          entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          try {
+            result = await result;
+            entry.querySelector('.out').remove();
+          } catch (err) {
+            result = { type: 'err', text: String(err?.message || err) };
+            entry.querySelector('.out').remove();
+          }
+          if (result) {
+            if (result.type === 'html') {
+              entry.appendChild(h('div', { class: 'out out-html', html: result.text }));
+            } else {
+              const text = result.text;
+              const lines = Array.isArray(text) ? text.join('\n') : String(text ?? '');
+              entry.appendChild(h('pre', { class: result.type === 'err' ? 'out err' : 'out', text: lines }));
+            }
+          }
+          entry.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return;
+        }
+      }
       catch (err) { result = { type: 'err', text: String(err?.message || err) }; }
     }
 
