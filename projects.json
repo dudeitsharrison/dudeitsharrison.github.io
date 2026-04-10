@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "owner": "Harrison Engle",
+    "tagline": "Indie software built solo. Click around.",
+    "contact_email": "harrisonengle@gmail.com",
+    "github": "https://github.com/dudeitsharrison",
+    "pinned_rotation_ms": 6000
+  },
+  "pinned": ["snipboard", "picklepairs"],
+  "categories": {
+    "apps": {
+      "name": "Apps",
+      "icon": "📦",
+      "description": "Shipping apps you can actually use."
+    },
+    "dev-tools": {
+      "name": "Developer Tools",
+      "icon": "🛠",
+      "description": "Tools for devs, writers, and tinkerers."
+    },
+    "games-helpers": {
+      "name": "Game Helpers",
+      "icon": "🎮",
+      "description": "Companion tools for games I play."
+    },
+    "experiments": {
+      "name": "Experiments",
+      "icon": "🧪",
+      "description": "Prototypes, one-offs, in-progress."
+    }
+  },
+  "projects": {
+    "snipboard": {
+      "name": "Snipboard",
+      "category": "apps",
+      "status": "live",
+      "logo": "screenshots/snipboard-logo.png",
+      "tagline": "Lightweight Windows screenshot tool with smart clipboard templates.",
+      "description": "A minimal Windows screenshot utility that lives in the system tray. Global hotkeys for region and fullscreen capture. Smart clipboard templates (Markdown, HTML, relative paths, and custom formats) so your snips drop into docs, chats, and issues already formatted. Persistent history panel, multi-snip mode, dark theme, and an offline-first lifetime license.",
+      "highlights": [
+        "Global hotkeys for region + fullscreen capture",
+        "Smart clipboard templates (Markdown, HTML, custom)",
+        "Persistent history panel + multi-snip mode",
+        "Offline-first with a lifetime license"
+      ],
+      "screenshots": [
+        "screenshots/snipboard-example.gif",
+        "screenshots/snip1.png",
+        "screenshots/snip2.png",
+        "screenshots/snip3.png",
+        "screenshots/snip4.png",
+        "screenshots/snip5.png"
+      ],
+      "tags": ["Windows", "Productivity", "$9.99", "Lifetime license"],
+      "links": [
+        { "label": "Buy Pro on Gumroad — $9.99", "url": "https://harrisonengle.gumroad.com/l/okjwv", "primary": true },
+        { "label": "Get Free version on Gumroad", "url": "https://harrisonengle.gumroad.com/l/akvydw" }
+      ]
+    },
+    "picklepairs": {
+      "name": "PicklePairs",
+      "category": "apps",
+      "status": "live",
+      "logo": "screenshots/picklepairs/logo.png",
+      "tagline": "Pickleball tournament manager — pair players, run rounds, track stats.",
+      "description": "A full tournament management web app built for pickleball clubs and casual groups. Plan rounds with smart pairing, run matches with a big-touch score keypad, track leaderboards and player stats, keep match history, and export results. Designed mobile-first so it works courtside on a phone. Free to use at picklepairs.com.",
+      "screenshots": [
+        "screenshots/picklepairs/planner.png",
+        "screenshots/picklepairs/round-view.png",
+        "screenshots/picklepairs/score-keypad.png",
+        "screenshots/picklepairs/tournament-matches.png",
+        "screenshots/picklepairs/leaderboard.png",
+        "screenshots/picklepairs/player-stats.png",
+        "screenshots/picklepairs/match-history.png",
+        "screenshots/picklepairs/player-panel.png",
+        "screenshots/picklepairs/profile-panel.png",
+        "screenshots/picklepairs/notifications.png",
+        "screenshots/picklepairs/export-panel.png"
+      ],
+      "tags": ["Web app", "Pickleball", "Tournaments", "Mobile-friendly", "Free"],
+      "links": [
+        { "label": "Open picklepairs.com", "url": "https://www.picklepairs.com", "primary": true }
+      ],
+      "reviews": [
+        {
+          "quote": "I just discovered this website and I love it. You've made it easy to use. Being able to drop players in between rounds or change who sits out are extremely helpful tools.",
+          "author": "PicklePairs user"
+        },
+        {
+          "quote": "Using PicklePairs was a great experience. Definitely makes everything easy to use, and everyone commented on how smoothly the tournament ran. I'd like to stick with this one due to its ability to pair partners without repeats each round.",
+          "author": "Tournament organizer"
+        }
+      ]
+    },
+    "claude-harry-ui": {
+      "name": "Claude Harry's UI",
+      "category": "dev-tools",
+      "status": "beta",
+      "tagline": "Electron desktop wrapper that gives Claude Code a proper UI.",
+      "description": "A Windows desktop app built on Electron that wraps the Claude Code CLI in a real GUI. Terminal integration, syntax highlighting, and markdown rendering so sessions feel like a native editor instead of a raw shell. Built for people who want Claude's agentic coding loop without living in a terminal window.",
+      "screenshots": [
+        "screenshots/claude-harry-ui/main.png",
+        "screenshots/claude-harry-ui/project2.png"
+      ],
+      "tags": ["Windows", "Electron", "Claude Code", "Developer tool"],
+      "availability": "wip",
+      "progress": {
+        "core": 80,
+        "ui": 75,
+        "stability": 50,
+        "docs": 30
+      },
+      "links": []
+    },
+    "skeptics-guide-player": {
+      "name": "Skeptics Guide Player",
+      "category": "apps",
+      "status": "live",
+      "logo": "screenshots/sgu-logo.svg",
+      "tagline": "PWA podcast player for The Skeptics Guide to the Universe.",
+      "description": "A standalone Progressive Web App for listening to The Skeptics Guide to the Universe. Browse, search, and play episodes with playlist support, dark space-themed UI, and install-to-home-screen on mobile or desktop. Works offline once episodes are cached.",
+      "screenshots": [
+        "screenshots/sgu-player/main.png",
+        "screenshots/sgu-player/episodes.png",
+        "screenshots/sgu-player/playing.png"
+      ],
+      "tags": ["PWA", "Podcast", "Audio", "Offline"],
+      "links": [
+        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/SGUPlayer", "primary": true }
+      ]
+    },
+    "transcribe-tutorials": {
+      "name": "TranscribeTutorials",
+      "category": "dev-tools",
+      "status": "beta",
+      "tagline": "AI video transcription with automatic chapter indexing.",
+      "description": "Upload a video or drop in a URL and get an accurate transcript back via AssemblyAI, with automatic chapter markers detected from the audio. Edit chapters by hand, then export searchable, embeddable HTML with clickable timestamp links — purpose-built for turning tutorial videos into indexed reference libraries.",
+      "screenshots": [
+        "screenshots/transcribe-tutorials/main.png",
+        "screenshots/transcribe-tutorials/transcribe.png",
+        "screenshots/transcribe-tutorials/collections.png",
+        "screenshots/transcribe-tutorials/transcription-view.png",
+        "screenshots/transcribe-tutorials/search-filter.png"
+      ],
+      "tags": ["React", "Node.js", "AssemblyAI", "Video", "Education"],
+      "availability": "wip",
+      "progress": {
+        "core": 70,
+        "ui": 65,
+        "stability": 40,
+        "docs": 20
+      },
+      "links": []
+    },
+    "pokemon-card-tracker": {
+      "name": "Thai Pokemon Card Tracker",
+      "category": "apps",
+      "status": "beta",
+      "tagline": "Track, scan, and manage your Pokemon card collection across languages.",
+      "description": "A full-stack web app for managing Pokemon card collections with multilingual support. Browse thousands of cards across sets, scan cards with your camera, track your collection progress, view stats, and explore Pokemon names across 9 languages. Features three view modes (grid, carousel, table), smart filtering, and a polished Material UI design.",
+      "screenshots": [
+        "screenshots/pokemon-tracker/home.png",
+        "screenshots/pokemon-tracker/browse-grid.png",
+        "screenshots/pokemon-tracker/browse-carousel.png",
+        "screenshots/pokemon-tracker/browse-table.png",
+        "screenshots/pokemon-tracker/set-detail.png",
+        "screenshots/pokemon-tracker/languages.png"
+      ],
+      "tags": ["React", "Node.js", "PostgreSQL", "Pokemon", "Multilingual"],
+      "availability": "wip",
+      "progress": {
+        "core": 85,
+        "ui": 80,
+        "stability": 55,
+        "docs": 25
+      },
+      "links": []
+    },
+    "nas-installer-helper": {
+      "name": "NAS Installer Helper",
+      "category": "dev-tools",
+      "status": "live",
+      "tagline": "Let Windows installers write to mapped NAS drives without \"invalid drive\" crashes.",
+      "description": "A PowerShell utility that fixes a specific but maddening Windows problem: game and app installers crash with 'invalid drive' errors when pointed at a mapped NAS share, even though the drive works fine in Explorer. The cause is that installers run as SYSTEM, which does not see user-session drive mappings. This tool temporarily grants SYSTEM visibility to your NAS share so the installer can complete, then cleanly revokes access afterward. No dependencies, no compilation, no saved credentials — just two scripts you run with admin rights.",
+      "screenshots": [
+        "screenshots/nas-installer-helper/main.png"
+      ],
+      "tags": ["Windows", "PowerShell", "NAS", "Utility", "MIT"],
+      "links": [
+        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/NAS_Installer_Helper", "primary": true }
+      ]
+    }
+  }
+}
