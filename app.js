@@ -1585,24 +1585,28 @@
     const id = 'stats-' + Date.now();
     const gcUrl = `https://${GC_SITE}.goatcounter.com`;
 
-    fetch(`${gcUrl}/counter/${encodeURIComponent('/')}.json`)
-      .then(r => r.ok ? r.json() : { count: '0', count_unique: '0' })
+    fetch(gcUrl + '/counter/' + '%2F' + '.json')
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(data => {
         const el = document.getElementById(id);
         if (!el) return;
         const views = parseInt(data.count) || 0;
         const unique = parseInt(data.count_unique) || 0;
         const bar = '\u2588'.repeat(Math.max(1, Math.min(30, unique)));
+        const barV = '\u2588'.repeat(Math.max(1, Math.min(30, views)));
         let html = `<div class="search-header">visitor stats</div>`;
         html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:6px 0">  unique visitors   ${bar} ${unique}</div>`;
-        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:2px 0">  total pageviews   ${'\u2588'.repeat(Math.max(1, Math.min(30, views)))} ${views}</div>`;
+        html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:2px 0">  total pageviews   ${barV} ${views}</div>`;
         html += `<div class="search-match" style="margin-top:10px">full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
         el.innerHTML = html;
         el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       })
-      .catch(() => {
+      .catch(err => {
         const el = document.getElementById(id);
-        if (el) el.innerHTML = `<div class="search-match">error loading stats — <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">view dashboard</a></div>`;
+        if (el) el.innerHTML = `<div class="search-header">visitor stats</div><div class="search-match">could not fetch live data (${err.message})</div><div class="search-match" style="margin-top:6px">view full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
       });
     return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
