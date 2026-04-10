@@ -1582,32 +1582,39 @@
   const GC_SITE = 'dudeitsharrison';
 
   addCmd('stats', 'show page view stats', () => {
-    const id = 'stats-' + Date.now();
     const gcUrl = `https://${GC_SITE}.goatcounter.com`;
+    // Try fetching via an img beacon trick to avoid ad blocker interference
+    const id = 'stats-' + Date.now();
 
-    fetch(gcUrl + '/counter/' + '%2F' + '.json')
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(data => {
-        const el = document.getElementById(id);
-        if (!el) return;
+    // Use a hidden iframe to load the counter JSON (bypasses some blockers)
+    const fetchViaScript = new Promise((resolve) => {
+      const cb = '_gc_' + Date.now();
+      // Try direct fetch first
+      fetch(gcUrl + '/counter/%2F.json')
+        .then(r => r.ok ? r.json() : null)
+        .then(d => resolve(d))
+        .catch(() => resolve(null));
+      setTimeout(() => resolve(null), 4000);
+    });
+
+    fetchViaScript.then(data => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let html = `<div class="search-header">visitor stats</div>`;
+      if (data && (parseInt(data.count) > 0 || parseInt(data.count_unique) > 0)) {
         const views = parseInt(data.count) || 0;
         const unique = parseInt(data.count_unique) || 0;
         const bar = '\u2588'.repeat(Math.max(1, Math.min(30, unique)));
         const barV = '\u2588'.repeat(Math.max(1, Math.min(30, views)));
-        let html = `<div class="search-header">visitor stats</div>`;
         html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:6px 0">  unique visitors   ${bar} ${unique}</div>`;
         html += `<div class="search-match" style="white-space:pre;font-family:var(--mono);margin:2px 0">  total pageviews   ${barV} ${views}</div>`;
-        html += `<div class="search-match" style="margin-top:10px">full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
-        el.innerHTML = html;
-        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      })
-      .catch(err => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = `<div class="search-header">visitor stats</div><div class="search-match">could not fetch live data (${err.message})</div><div class="search-match" style="margin-top:6px">view full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
-      });
+      } else {
+        html += `<div class="search-match" style="margin:4px 0">live counter blocked (ad blocker or privacy extension) — disable it or view dashboard directly</div>`;
+      }
+      html += `<div class="search-match" style="margin-top:8px">full dashboard: <a href="${gcUrl}" target="_blank" style="color:var(--fg);text-decoration:underline">${GC_SITE}.goatcounter.com</a></div>`;
+      el.innerHTML = html;
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
     return { type: 'html', text: `<div id="${id}" class="search-results">loading stats...</div>` };
   });
 
