@@ -207,7 +207,7 @@
 
   const BRAND_ASCII =
 `╔══════════════════════════════════════════════════════════╗
-║  H A R R I S O N · E N G L E    —    AI-assisted dev       ║
+║  H A R R I S O N · E N G L E    —   tools for efficiency ║
 ╚══════════════════════════════════════════════════════════╝`;
 
   function headerBlock() {
