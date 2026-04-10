@@ -368,12 +368,21 @@
       inner.appendChild(h('p', { class: 'sp-review', text: '”' + r.quote + '”' }));
     }
     if (proj.screenshots?.length) {
-      inner.appendChild(h('img', {
-        class: 'sp-thumb',
-        src: proj.screenshots[0],
-        alt: proj.name + ' screenshot',
-        loading: 'eager',
-      }));
+      const thumbSrc = proj.screenshots[0];
+      if (/\.(webm|mp4)$/i.test(thumbSrc)) {
+        inner.appendChild(h('video', {
+          class: 'sp-thumb',
+          src: thumbSrc,
+          autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
+        }));
+      } else {
+        inner.appendChild(h('img', {
+          class: 'sp-thumb',
+          src: thumbSrc,
+          alt: proj.name + ' screenshot',
+          loading: 'eager',
+        }));
+      }
     }
     inner.appendChild(h('a', {
       class: 'sp-cta',
@@ -580,18 +589,28 @@
     if (proj.screenshots?.length) {
       const shots = h('div', { class: 'shots' });
       proj.screenshots.forEach((src) => {
-        const isWide = /\.gif$/i.test(src);
-        const img = h('img', { src, alt: `${proj.name} screenshot`, loading: 'lazy' });
-        const link = h('a', {
-          class: isWide ? 'shot wide' : 'shot',
-          href: src,
-          onclick: (e) => { e.preventDefault(); openLightbox(src, `${proj.name} screenshot`); },
-        }, img);
-        img.addEventListener('error', () => {
-          const fallback = h('div', { class: 'shot-missing', text: `(missing: ${src})` });
-          link.replaceWith(fallback);
-        });
-        shots.appendChild(link);
+        const isVideo = /\.(webm|mp4)$/i.test(src);
+        const isWide = /\.(gif|webm|mp4)$/i.test(src);
+        if (isVideo) {
+          const vid = h('video', {
+            src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true',
+            class: 'shot-video',
+          });
+          const wrap = h('div', { class: isWide ? 'shot wide' : 'shot' }, vid);
+          shots.appendChild(wrap);
+        } else {
+          const img = h('img', { src, alt: `${proj.name} screenshot`, loading: 'lazy' });
+          const link = h('a', {
+            class: isWide ? 'shot wide' : 'shot',
+            href: src,
+            onclick: (e) => { e.preventDefault(); openLightbox(src, `${proj.name} screenshot`); },
+          }, img);
+          img.addEventListener('error', () => {
+            const fallback = h('div', { class: 'shot-missing', text: `(missing: ${src})` });
+            link.replaceWith(fallback);
+          });
+          shots.appendChild(link);
+        }
       });
       body.appendChild(shots);
     }

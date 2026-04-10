@@ -201,6 +201,27 @@
       "links": [
         { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/NAS_Installer_Helper", "primary": true }
       ]
+    },
+    "portfolio-site": {
+      "name": "Portfolio Site",
+      "category": "dev-tools",
+      "status": "live",
+      "tagline": "Terminal-themed portfolio with interactive CLI, search, and a Claude Code simulator.",
+      "description": "This site. A static portfolio built as an interactive terminal — browse projects by category, search with highlighted results, filter by hashtags, track WIP progress with granular bars, and run a simulated Claude Code session right in the browser. No framework, no build step — just vanilla HTML/CSS/JS served on GitHub Pages. Built entirely with AI-assisted engineering using Claude Code.",
+      "highlights": [
+        "Interactive terminal with search, tags, and navigation",
+        "Simulated Claude Code session with /help, /cost, /exit",
+        "WIP progress bars with category breakdowns",
+        "Zero dependencies — pure static HTML/CSS/JS"
+      ],
+      "screenshots": [
+        "screenshots/portfolio-site/promo.webm"
+      ],
+      "tags": ["JavaScript", "CSS", "HTML", "GitHub Pages", "Terminal UI", "Claude Code", "AI-Assisted", "Static Site", "Portfolio", "Open Source"],
+      "links": [
+        { "label": "View live site", "url": "https://dudeitsharrison.github.io", "primary": true },
+        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/dudeitsharrison.github.io" }
+      ]
     }
   }
 }
