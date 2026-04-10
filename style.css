@@ -286,6 +286,7 @@ hr.rule {
   border-radius: 2px;
   border: 1px solid var(--fg-dim);
   opacity: 0.85;
+  background: #000;
 }
 .spotlight .sp-inner {
   animation: spFade 300ms ease-out both;
