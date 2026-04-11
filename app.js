@@ -1657,7 +1657,18 @@
     return h('pre', { class: 'brand', text: BRAND_ASCII });
   }
 
+  async function loadTheme() {
+    try {
+      const res = await fetch('theme.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const theme = await res.json();
+      const root = document.documentElement.style;
+      Object.entries(theme).forEach(([k, v]) => root.setProperty('--' + k, v));
+    } catch { /* theme.json is optional */ }
+  }
+
   async function main() {
+    await loadTheme();
     try {
       state.data = await loadData();
     } catch { return; }
