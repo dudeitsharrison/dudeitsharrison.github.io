@@ -782,6 +782,7 @@ hr.rule {
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: help;
 }
 .progress-cat {
   font-size: 10px;

@@ -584,6 +584,12 @@
 
     const AVAILABILITY_LABELS = { wip: 'Work in progress', private: 'Source private', 'coming-soon': 'Coming soon' };
     const PROGRESS_LABELS = { core: 'Core', ui: 'UI / Design', stability: 'Stability', docs: 'Docs / Deploy' };
+    const PROGRESS_TIPS = {
+      core: 'Main functionality — are the primary features working end-to-end?',
+      ui: 'Interface polish — styled, responsive, and consistent design?',
+      stability: 'Reliability — error handling, edge cases, crash-free?',
+      docs: 'Deployment readiness — README, setup instructions, deploy configs?',
+    };
     const avLabel = proj.availability && AVAILABILITY_LABELS[proj.availability];
 
     // Description + progress side by side
@@ -602,7 +608,7 @@
         wrap.appendChild(barOuter);
         const breakdown = h('div', { class: 'progress-breakdown' });
         cats.forEach(([key, val]) => {
-          const row2 = h('div', { class: 'progress-row' });
+          const row2 = h('div', { class: 'progress-row', title: PROGRESS_TIPS[key] || '' });
           row2.appendChild(h('span', { class: 'progress-cat', text: PROGRESS_LABELS[key] || key }));
           const miniBar = h('div', { class: 'progress-mini-bar' });
           miniBar.appendChild(h('div', { class: 'progress-mini-fill', style: `width:${val}%` }));
