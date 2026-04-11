@@ -785,7 +785,7 @@
     "portfolio-admin": {
       "name": "devPortfolio Admin",
       "category": "dev-tools",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Desktop control panel for managing your portfolio site",
       "description": "An Electron desktop app that serves as a full admin panel for a developer portfolio site. Edit projects, manage pinned showcases,   customize themes with live preview, handle screenshots, and commit/push changes to Git - all from a single native interface.",
       "tags": [
