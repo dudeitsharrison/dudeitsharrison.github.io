@@ -371,6 +371,74 @@ hr.rule {
   0%, 100% { background-position: 100% 0; }
   50% { background-position: 0% 0; }
 }
+.status-wip {
+  color: var(--fg);
+  background: linear-gradient(
+    90deg,
+    var(--fg) 0%,
+    var(--fg) 35%,
+    #fbbf24 45%,
+    #f59e0b 50%,
+    #fbbf24 55%,
+    var(--fg) 65%,
+    var(--fg) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-yellow 4s ease-in-out infinite;
+}
+@keyframes shimmer-yellow {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
+.status-trial {
+  color: var(--fg);
+  background: linear-gradient(
+    90deg,
+    var(--fg) 0%,
+    var(--fg) 30%,
+    #a5d8ff 40%,
+    #4dabf7 48%,
+    #1971c2 52%,
+    #4dabf7 56%,
+    #a5d8ff 60%,
+    var(--fg) 70%,
+    var(--fg) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-ice 3s ease-in-out infinite;
+}
+@keyframes shimmer-ice {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
+.status-learning {
+  color: var(--fg);
+  background: linear-gradient(
+    90deg,
+    var(--fg) 0%,
+    var(--fg) 35%,
+    #d8b4fe 45%,
+    #a855f7 50%,
+    #d8b4fe 55%,
+    var(--fg) 65%,
+    var(--fg) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-purple 4s ease-in-out infinite;
+}
+@keyframes shimmer-purple {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
 .spotlight .sp-titlewrap {
   display: flex;
   align-items: center;

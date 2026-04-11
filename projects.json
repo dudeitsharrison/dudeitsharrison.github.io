@@ -4,15 +4,15 @@
     "tagline": "Tools for efficiency. Click around.",
     "contact_email": "harrisonengle@gmail.com",
     "github": "https://github.com/dudeitsharrison",
-    "pinned_rotation_ms": 3500
+    "pinned_rotation_ms": 4000
   },
   "pinned": [
     "snipboard",
     "picklepairs",
-    "pokemon-card-tracker",
     "report-repo",
-    "my-big-small-trip",
-    "pc-remote"
+    "pokemon-card-tracker",
+    "pc-remote",
+    "my-big-small-trip"
   ],
   "categories": {
     "apps": {
