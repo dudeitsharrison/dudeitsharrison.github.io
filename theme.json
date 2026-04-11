@@ -1,3 +1,18 @@
 {
-  "status-yellow": "#ffffff"
+  "bg": "#F7C52D",
+  "fg": "#0A0A0A",
+  "fg-dim": "#3A3A3A",
+  "fg-faint": "#6a5a12",
+  "accent": "#000000",
+  "error": "#B91C1C",
+  "rule": "rgba(10, 10, 10, 0.22)",
+  "rule-soft": "rgba(10, 10, 10, 0.10)",
+  "hover-bg": "rgba(10, 10, 10, 0.08)",
+  "spotlight-bg": "rgba(10, 10, 10, 0.055)",
+  "overlay-subtle": "rgba(10, 10, 10, 0.04)",
+  "overlay-light": "rgba(10, 10, 10, 0.08)",
+  "overlay-medium": "rgba(10, 10, 10, 0.12)",
+  "overlay-heavy": "rgba(10, 10, 10, 0.22)",
+  "overlay-dark": "rgba(10, 10, 10, 0.88)",
+  "_preset": "terminal-gold"
 }
