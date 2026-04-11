@@ -113,15 +113,17 @@
   document.addEventListener('keydown', skipTyping);
   document.addEventListener('click', skipTyping, true);
 
-  // focus the terminal field on any non-interactive click
+  // focus the terminal field on any non-interactive click (skip on touch — pops keyboard)
   document.addEventListener('click', (e) => {
+    if (matchMedia('(hover: none), (pointer: coarse)').matches) return;
     if (e.target.closest('a, button, input, textarea, select, [tabindex], .lightbox, .crumbs, .dir .row, .pin-list button, .spotlight .sp-cta')) return;
     const field = document.querySelector('.term-field');
     if (field && document.activeElement !== field) field.focus({ preventScroll: true });
   });
 
-  // route keystrokes into the terminal field even when focus is elsewhere
+  // route keystrokes into the terminal field even when focus is elsewhere (skip on touch)
   document.addEventListener('keydown', (e) => {
+    if (matchMedia('(hover: none), (pointer: coarse)').matches) return;
     const active = document.activeElement;
     if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -253,6 +255,9 @@
     }
   }
 
+  const SHARE_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12V14H12V12"/><path d="M8 10V2"/><path d="M5 5L8 2L11 5"/></svg>`;
+  const CHECK_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5L6.5 12L13 4"/></svg>`;
+
   function shareButton() {
     const btn = h('button', {
       class: 'share-btn',
@@ -263,12 +268,12 @@
           try { await navigator.share(data); } catch {}
         } else {
           await navigator.clipboard.writeText(data.url).catch(() => {});
-          btn.textContent = 'copied!';
-          setTimeout(() => { btn.innerHTML = '&#9741; share'; }, 1500);
+          btn.innerHTML = CHECK_SVG;
+          setTimeout(() => { btn.innerHTML = SHARE_SVG; }, 1500);
         }
       },
     });
-    btn.innerHTML = '&#9741; share';
+    btn.innerHTML = SHARE_SVG;
     return btn;
   }
 
@@ -704,11 +709,25 @@
     const media = isVideo
       ? h('video', { src, autoplay: 'true', loop: 'true', muted: 'true', playsinline: 'true', controls: 'true', style: 'max-width:90vw;max-height:90vh;' })
       : h('img', { src, alt });
+    const closeBtn = h('button', {
+      'aria-label': 'Close lightbox',
+      onclick: closeLightbox,
+      text: '\u2715',
+    });
+    Object.assign(closeBtn.style, {
+      position: 'absolute', top: '16px', right: '16px',
+      width: '44px', height: '44px',
+      background: 'rgba(255,255,255,0.15)', border: 'none',
+      color: '#fff', fontSize: '24px', cursor: 'pointer',
+      borderRadius: '50%', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', zIndex: '10000',
+    });
     const box = h('div', {
       class: 'lightbox',
       id: 'lightbox',
       onclick: (e) => { if (e.target === box) closeLightbox(); },
     }, media);
+    box.appendChild(closeBtn);
     document.body.appendChild(box);
     const onKey = (e) => { if (e.key === 'Escape') closeLightbox(); };
     document.addEventListener('keydown', onKey);
