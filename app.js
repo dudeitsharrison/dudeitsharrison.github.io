@@ -1579,7 +1579,7 @@
   }
 
   // --- View counter (GoatCounter) ---
-  const GC_SITE = 'dudeitsharrison';
+  const GC_SITE = state.data?.meta?.goatcounter_site || '';
 
   addCmd('stats', 'show page view stats', () => {
     const gcUrl = `https://${GC_SITE}.goatcounter.com`;
@@ -1672,6 +1672,16 @@
     try {
       state.data = await loadData();
     } catch { return; }
+
+    // Inject GoatCounter script if configured
+    const gcSite = state.data?.meta?.goatcounter_site;
+    if (gcSite) {
+      const s = document.createElement('script');
+      s.dataset.goatcounter = `https://${gcSite}.goatcounter.com/count`;
+      s.async = true;
+      s.src = '//gc.zgo.at/count.js';
+      document.body.appendChild(s);
+    }
 
     const hasHash = !!location.hash && location.hash !== '#' && location.hash !== '#/';
     if (hasHash) {

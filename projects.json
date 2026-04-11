@@ -4,7 +4,8 @@
     "tagline": "Tools for efficiency. Click around.",
     "contact_email": "harrisonengle@gmail.com",
     "github": "https://github.com/dudeitsharrison",
-    "pinned_rotation_ms": 4000
+    "pinned_rotation_ms": 4000,
+    "goatcounter_site": "dudeitsharrison"
   },
   "pinned": [
     "snipboard",
