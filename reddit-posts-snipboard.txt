@@ -1,0 +1,63 @@
+==============================================================
+POST 1 — THE PROJECT (r/vibecoding)
+==============================================================
+
+TITLE: Vibe coded a Windows screenshot tool that lets you batch-capture and paste multiple snips into Claude at once
+
+BODY:
+
+If you're using Claude or any AI model for coding, you know the pain: screenshot one thing, paste it, screenshot another, paste it, screenshot a third, paste it. Over and over. I built Snipboard to fix that.
+
+**The core feature — Multi-Snip Mode:**
+Turn it on, capture as many regions or fullscreens as you need in a row — error messages, UI states, terminal output, whatever — and when you're done, all of them get batch-copied to your clipboard as formatted file paths, Markdown image links, or HTML. One paste into Claude and it has the full picture. No more back-and-forth capture-paste-capture-paste.
+
+This alone changed how I work with AI. Instead of drip-feeding context one screenshot at a time, I capture everything relevant in one sweep and give Claude the full context in a single message.
+
+**Other features:**
+- Global hotkeys for region capture (Ctrl+Shift+S) and fullscreen (Ctrl+Shift+F)
+- Smart clipboard templates — paste as Markdown, HTML, relative paths, or custom formats
+- Persistent history panel so you never lose a capture
+- System tray app, dark theme, offline-first
+- Lifetime license ($9.99 / free version available)
+
+**Links:**
+- Screenshots and GIF demo: https://dudeitsharrison.github.io#/apps/snipboard
+- Buy Pro ($9.99 lifetime): https://harrisonengle.gumroad.com/l/okjwv
+- Free version: https://harrisonengle.gumroad.com/l/akvydw
+
+
+==============================================================
+POST 2 — THE BUILD PROCESS (r/vibecoding, 1-2 days later)
+==============================================================
+
+TITLE: How I built a Windows screenshot tool entirely through Claude Code — process breakdown
+
+BODY:
+
+Follow-up to my Snipboard post. A few people asked how I actually built it, so here's the full breakdown.
+
+**The stack:**
+- Python + Qt (PySide6) for the desktop app
+- Global hotkey system via the `keyboard` library
+- System tray integration for always-on background running
+- Built entirely through Claude Code — no manual IDE work
+
+**My workflow (not just prompting):**
+This wasn't a one-shot prompt. I ran Claude Code like a junior engineer I was overseeing:
+
+1. **Spec first** — defined the hotkey system, clipboard template transforms, tray menu structure, and the multi-snip batching logic upfront
+2. **Agent orchestration** — separate Claude sessions for the capture engine, template system, and UI. Reviewed every diff before accepting
+3. **Edge case grinding** — global hotkeys on Windows are brutal. With `suppress=True`, modifier keys "stick" globally and break Qt's event detection. Took multiple iterations to land on `suppress=False` with non-conflicting key combos
+4. **Dogfooding** — I use Snipboard daily for feeding context into Claude. Every bug I hit became a fix request with exact repro steps
+
+**What I learned:**
+- The multi-snip batch workflow completely changed my AI interaction pattern — giving a model 5 screenshots in one message gets dramatically better responses than feeding them one at a time
+- Global hotkeys on Windows are genuinely painful — had to understand WH_KEYBOARD_LL hook behavior to guide Claude past the modifier key sticking bug
+- The clipboard template system started as "just copy the path" and evolved into the second most useful feature after multi-snip
+
+**Links:**
+- Screenshots and GIF demo: https://dudeitsharrison.github.io#/apps/snipboard
+- Buy Pro ($9.99 lifetime): https://harrisonengle.gumroad.com/l/okjwv
+- Free version: https://harrisonengle.gumroad.com/l/akvydw
+
+Happy to answer questions about the build or the multi-snip workflow.
