@@ -6,7 +6,14 @@
     "github": "https://github.com/dudeitsharrison",
     "pinned_rotation_ms": 3500
   },
-  "pinned": ["snipboard", "picklepairs", "pokemon-card-tracker", "report-repo", "my-big-small-trip", "pc-remote"],
+  "pinned": [
+    "snipboard",
+    "picklepairs",
+    "pokemon-card-tracker",
+    "report-repo",
+    "my-big-small-trip",
+    "pc-remote"
+  ],
   "categories": {
     "apps": {
       "name": "Apps",
@@ -51,10 +58,28 @@
         "screenshots/snip5.png",
         "screenshots/snipboard-example.gif"
       ],
-      "tags": ["Windows", "Python", "Qt", "Screenshot", "Clipboard", "Productivity", "Desktop App", "Hotkeys", "Dark Theme", "Offline"],
+      "tags": [
+        "Windows",
+        "Python",
+        "Qt",
+        "Screenshot",
+        "Clipboard",
+        "Productivity",
+        "Desktop App",
+        "Hotkeys",
+        "Dark Theme",
+        "Offline"
+      ],
       "links": [
-        { "label": "Buy Pro on Gumroad — $9.99", "url": "https://harrisonengle.gumroad.com/l/okjwv", "primary": true },
-        { "label": "Get Free version on Gumroad", "url": "https://harrisonengle.gumroad.com/l/akvydw" }
+        {
+          "label": "Buy Pro on Gumroad — $9.99",
+          "url": "https://harrisonengle.gumroad.com/l/okjwv",
+          "primary": true
+        },
+        {
+          "label": "Get Free version on Gumroad",
+          "url": "https://harrisonengle.gumroad.com/l/akvydw"
+        }
       ]
     },
     "picklepairs": {
@@ -83,9 +108,24 @@
         "screenshots/picklepairs/notifications.png",
         "screenshots/picklepairs/export-panel.png"
       ],
-      "tags": ["Web App", "JavaScript", "Mobile-First", "Pickleball", "Sports", "Tournaments", "Leaderboard", "Statistics", "PWA", "Free"],
+      "tags": [
+        "Web App",
+        "JavaScript",
+        "Mobile-First",
+        "Pickleball",
+        "Sports",
+        "Tournaments",
+        "Leaderboard",
+        "Statistics",
+        "PWA",
+        "Free"
+      ],
       "links": [
-        { "label": "Open picklepairs.com", "url": "https://www.picklepairs.com", "primary": true }
+        {
+          "label": "Open picklepairs.com",
+          "url": "https://www.picklepairs.com",
+          "primary": true
+        }
       ],
       "reviews": [
         {
@@ -101,14 +141,25 @@
     "claude-harry-ui": {
       "name": "Claude Harry's UI",
       "category": "dev-tools",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Electron desktop wrapper that gives Claude Code a proper UI.",
       "description": "A Windows desktop app built on Electron that wraps the Claude Code CLI in a real GUI. Terminal integration, syntax highlighting, and markdown rendering so sessions feel like a native editor instead of a raw shell. Built for people who want Claude's agentic coding loop without living in a terminal window.",
       "screenshots": [
         "screenshots/claude-harry-ui/main.png",
         "screenshots/claude-harry-ui/project2.png"
       ],
-      "tags": ["Windows", "Electron", "TypeScript", "Claude Code", "Terminal", "Syntax Highlighting", "Markdown", "Developer Tool", "Desktop App", "AI-Assisted"],
+      "tags": [
+        "Windows",
+        "Electron",
+        "TypeScript",
+        "Claude Code",
+        "Terminal",
+        "Syntax Highlighting",
+        "Markdown",
+        "Developer Tool",
+        "Desktop App",
+        "AI-Assisted"
+      ],
       "availability": "wip",
       "progress": {
         "core": 80,
@@ -130,9 +181,24 @@
         "screenshots/sgu-player/episodes.png",
         "screenshots/sgu-player/playing.png"
       ],
-      "tags": ["PWA", "JavaScript", "Podcast", "Audio", "Offline", "Dark Theme", "RSS", "Mobile-First", "Music", "Open Source"],
+      "tags": [
+        "PWA",
+        "JavaScript",
+        "Podcast",
+        "Audio",
+        "Offline",
+        "Dark Theme",
+        "RSS",
+        "Mobile-First",
+        "Music",
+        "Open Source"
+      ],
       "links": [
-        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/SGUPlayer", "primary": true }
+        {
+          "label": "View on GitHub",
+          "url": "https://github.com/dudeitsharrison/SGUPlayer",
+          "primary": true
+        }
       ]
     },
     "transcribe-tutorials": {
@@ -148,7 +214,18 @@
         "screenshots/transcribe-tutorials/transcription-view.png",
         "screenshots/transcribe-tutorials/search-filter.png"
       ],
-      "tags": ["React", "Node.js", "Express", "AssemblyAI", "Video", "Transcription", "Chapters", "Search", "Education", "HTML Export"],
+      "tags": [
+        "React",
+        "Node.js",
+        "Express",
+        "AssemblyAI",
+        "Video",
+        "Transcription",
+        "Chapters",
+        "Search",
+        "Education",
+        "HTML Export"
+      ],
       "availability": "wip",
       "progress": {
         "core": 70,
@@ -178,7 +255,18 @@
         "screenshots/pokemon-tracker/set-detail.png",
         "screenshots/pokemon-tracker/languages.png"
       ],
-      "tags": ["React", "TypeScript", "Node.js", "PostgreSQL", "Pokemon", "Multilingual", "Camera Scan", "Collection", "Full-Stack", "Gaming"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL",
+        "Pokemon",
+        "Multilingual",
+        "Camera Scan",
+        "Collection",
+        "Full-Stack",
+        "Gaming"
+      ],
       "availability": "wip",
       "progress": {
         "core": 85,
@@ -197,9 +285,23 @@
       "screenshots": [
         "screenshots/nas-installer-helper/main.png"
       ],
-      "tags": ["Windows", "PowerShell", "NAS", "Networking", "Admin", "Installer Fix", "System Utility", "Open Source", "MIT"],
+      "tags": [
+        "Windows",
+        "PowerShell",
+        "NAS",
+        "Networking",
+        "Admin",
+        "Installer Fix",
+        "System Utility",
+        "Open Source",
+        "MIT"
+      ],
       "links": [
-        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/NAS_Installer_Helper", "primary": true }
+        {
+          "label": "View on GitHub",
+          "url": "https://github.com/dudeitsharrison/NAS_Installer_Helper",
+          "primary": true
+        }
       ]
     },
     "portfolio-site": {
@@ -217,10 +319,28 @@
       "screenshots": [
         "screenshots/portfolio-site/promo.webm"
       ],
-      "tags": ["JavaScript", "CSS", "HTML", "GitHub Pages", "Terminal UI", "Claude Code", "AI-Assisted", "Static Site", "Portfolio", "Open Source"],
+      "tags": [
+        "JavaScript",
+        "CSS",
+        "HTML",
+        "GitHub Pages",
+        "Terminal UI",
+        "Claude Code",
+        "AI-Assisted",
+        "Static Site",
+        "Portfolio",
+        "Open Source"
+      ],
       "links": [
-        { "label": "View live site", "url": "https://dudeitsharrison.github.io", "primary": true },
-        { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/dudeitsharrison.github.io" }
+        {
+          "label": "View live site",
+          "url": "https://dudeitsharrison.github.io",
+          "primary": true
+        },
+        {
+          "label": "View on GitHub",
+          "url": "https://github.com/dudeitsharrison/dudeitsharrison.github.io"
+        }
       ]
     },
     "twentyfour": {
@@ -240,7 +360,18 @@
         "screenshots/twentyfour/gameplay.png",
         "screenshots/twentyfour/team-mode.png"
       ],
-      "tags": ["React", "TypeScript", "Socket.IO", "Multiplayer", "Math", "Classroom", "Vite", "Tailwind CSS", "Real-Time", "Full-Stack"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "Socket.IO",
+        "Multiplayer",
+        "Math",
+        "Classroom",
+        "Vite",
+        "Tailwind CSS",
+        "Real-Time",
+        "Full-Stack"
+      ],
       "availability": "wip",
       "progress": {
         "core": 75,
@@ -267,9 +398,24 @@
         "screenshots/team-maker/generated.png",
         "screenshots/team-maker/teams.png"
       ],
-      "tags": ["React", "Vite", "JavaScript", "Teachers", "Drag-and-Drop", "Algorithms", "Classroom", "Free", "Offline", "Export"],
+      "tags": [
+        "React",
+        "Vite",
+        "JavaScript",
+        "Teachers",
+        "Drag-and-Drop",
+        "Algorithms",
+        "Classroom",
+        "Free",
+        "Offline",
+        "Export"
+      ],
       "links": [
-        { "label": "Open Team Maker", "url": "https://teacherlytics.net/TeamGenerator", "primary": true }
+        {
+          "label": "Open Team Maker",
+          "url": "https://teacherlytics.net/TeamGenerator",
+          "primary": true
+        }
       ]
     },
     "flashcard-maker": {
@@ -288,7 +434,18 @@
         "screenshots/deckuration/main.png",
         "screenshots/deckuration/cards.png"
       ],
-      "tags": ["JavaScript", "Node.js", "Express", "MongoDB", "Teachers", "AI-Assisted", "Image API", "Flashcards", "Classroom", "Free"],
+      "tags": [
+        "JavaScript",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Teachers",
+        "AI-Assisted",
+        "Image API",
+        "Flashcards",
+        "Classroom",
+        "Free"
+      ],
       "availability": "wip",
       "progress": {
         "core": 80,
@@ -317,13 +474,24 @@
         "screenshots/report-repo/master-log.png",
         "screenshots/report-repo/reports.png"
       ],
-      "tags": ["React", "TypeScript", "Node.js", "MySQL", "Teachers", "i18n", "PDF Export", "Full-Stack", "Classroom", "SaaS"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "MySQL",
+        "Teachers",
+        "i18n",
+        "PDF Export",
+        "Full-Stack",
+        "Classroom",
+        "SaaS"
+      ],
       "links": []
     },
     "my-big-small-trip": {
       "name": "My Big Small Trip",
       "category": "apps",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Interactive map-based day trip planner with shareable itineraries.",
       "description": "A full-stack trip planning app for building custom day itineraries on an interactive map. Browse curated locations across multiple regions (Kyoto, Tokyo, Hiroshima, Tampa Bay), create trips, add locations with transit details and costs, visualize routes, and share your plans via unique links with real-time sync. Includes favorites, route optimization, bulk location import, and trip statistics.",
       "highlights": [
@@ -339,7 +507,18 @@
         "screenshots/my-big-small-trip/trip-with-routes.png",
         "screenshots/my-big-small-trip/trip-locations-list.png"
       ],
-      "tags": ["React", "Node.js", "Express", "Leaflet", "Maps", "Travel", "Sharing", "Mobile-First", "Full-Stack", "Itinerary"],
+      "tags": [
+        "React",
+        "Node.js",
+        "Express",
+        "Leaflet",
+        "Maps",
+        "Travel",
+        "Sharing",
+        "Mobile-First",
+        "Full-Stack",
+        "Itinerary"
+      ],
       "availability": "wip",
       "progress": {
         "core": 75,
@@ -352,7 +531,7 @@
     "pc-remote": {
       "name": "PC-Remote",
       "category": "apps",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Control your Windows PC from your phone — screen mirror, keyboard, files, and apps.",
       "description": "A remote desktop app that pairs a Python WebSocket server with a Flutter Android client. Mirror your screen in real-time with adaptive quality, control mouse and keyboard via touch gestures, browse and transfer files, and launch or close applications. QR code pairing with PIN authentication and mDNS auto-discovery make setup instant on your local network.",
       "highlights": [
@@ -364,12 +543,23 @@
       "screenshots": [
         "screenshots/pc-remote/main.png"
       ],
-      "tags": ["Python", "Flutter", "WebSocket", "Android", "Windows", "Remote Desktop", "Screen Mirror", "File Transfer", "Cross-Platform", "Utility"],
+      "tags": [
+        "Python",
+        "Flutter",
+        "WebSocket",
+        "Android",
+        "Windows",
+        "Remote Desktop",
+        "Screen Mirror",
+        "File Transfer",
+        "Cross-Platform",
+        "Utility"
+      ],
       "availability": "wip",
       "progress": {
-        "core": 80,
-        "ui": 70,
-        "stability": 60,
+        "core": 89,
+        "ui": 80,
+        "stability": 66,
         "docs": 35
       },
       "links": []
@@ -377,7 +567,7 @@
     "hfs-drive-viewer": {
       "name": "HFS Drive Viewer",
       "category": "dev-tools",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Read and write Apple HFS+ drives on Windows with safety-first architecture.",
       "description": "A Windows desktop app for accessing HFS+ filesystems — Apple's format that Windows can't natively read. Built with .NET 10 and WinUI 3, it implements a clean-room native C parser for HFS+ volumes, write-ahead logging for safe modifications, and an elevated helper process for privilege escalation. Safety checks prevent writes to boot drives or mounted system partitions. Currently supports full read operations with folder creation on physical drives.",
       "highlights": [
@@ -387,7 +577,18 @@
         "Elevated helper via named pipes for privilege isolation"
       ],
       "screenshots": [],
-      "tags": ["C#", ".NET 10", "WinUI 3", "C", "Windows", "Filesystem", "HFS+", "Apple", "Desktop App", "Open Source"],
+      "tags": [
+        "C#",
+        ".NET 10",
+        "WinUI 3",
+        "C",
+        "Windows",
+        "Filesystem",
+        "HFS+",
+        "Apple",
+        "Desktop App",
+        "Open Source"
+      ],
       "availability": "wip",
       "progress": {
         "core": 65,
@@ -400,7 +601,7 @@
     "codemap": {
       "name": "CodeMap",
       "category": "dev-tools",
-      "status": "beta",
+      "status": "learning",
       "tagline": "Drag-and-drop codebase visualizer with interactive force-directed graphs.",
       "description": "Drop a project folder and see its architecture as an interactive node-link graph. CodeMap parses source files across multiple languages, extracts dependency relationships (imports, component renders, function calls, CSS references), and renders an animated force-directed layout with D3. Features include a minimap, fuzzy search, file type filtering, and an insights panel with node statistics.",
       "highlights": [
@@ -412,7 +613,18 @@
       "screenshots": [
         "screenshots/codemap/main.png"
       ],
-      "tags": ["React", "TypeScript", "D3", "Zustand", "Vite", "Visualization", "Developer Tool", "Graph", "Code Analysis", "Tailwind CSS"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "D3",
+        "Zustand",
+        "Vite",
+        "Visualization",
+        "Developer Tool",
+        "Graph",
+        "Code Analysis",
+        "Tailwind CSS"
+      ],
       "availability": "wip",
       "progress": {
         "core": 70,
@@ -437,7 +649,18 @@
       "screenshots": [
         "screenshots/teacher-planner/main.png"
       ],
-      "tags": ["React", "TypeScript", "Node.js", "MySQL", "Tiptap", "Teachers", "i18n", "PDF Export", "Curriculum", "Full-Stack"],
+      "tags": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "MySQL",
+        "Tiptap",
+        "Teachers",
+        "i18n",
+        "PDF Export",
+        "Curriculum",
+        "Full-Stack"
+      ],
       "availability": "wip",
       "progress": {
         "core": 70,
@@ -463,7 +686,18 @@
         "screenshots/styles-eliminator/popup.png",
         "screenshots/styles-eliminator/panel.png"
       ],
-      "tags": ["Chrome Extension", "Manifest V3", "JavaScript", "CSS", "DevTools", "Developer Tool", "Performance", "Web Development", "Browser", "Open Source"],
+      "tags": [
+        "Chrome Extension",
+        "Manifest V3",
+        "JavaScript",
+        "CSS",
+        "DevTools",
+        "Developer Tool",
+        "Performance",
+        "Web Development",
+        "Browser",
+        "Open Source"
+      ],
       "links": []
     },
     "vectme": {
@@ -479,7 +713,18 @@
         "Export to SVG, PDF, and EPS with cross-platform builds"
       ],
       "screenshots": [],
-      "tags": ["Electron", "WebGL", "Node.js", "Potrace", "Paper.js", "Image Processing", "Vectorization", "Desktop App", "Cross-Platform", "GPU"],
+      "tags": [
+        "Electron",
+        "WebGL",
+        "Node.js",
+        "Potrace",
+        "Paper.js",
+        "Image Processing",
+        "Vectorization",
+        "Desktop App",
+        "Cross-Platform",
+        "GPU"
+      ],
       "links": []
     },
     "live-translate-scroll": {
@@ -495,7 +740,18 @@
         "Floating control panel with language switching"
       ],
       "screenshots": [],
-      "tags": ["Kotlin", "Swift", "Android", "iOS", "ML Kit", "OCR", "Translation", "Mobile", "Native APIs", "Real-Time"],
+      "tags": [
+        "Kotlin",
+        "Swift",
+        "Android",
+        "iOS",
+        "ML Kit",
+        "OCR",
+        "Translation",
+        "Mobile",
+        "Native APIs",
+        "Real-Time"
+      ],
       "links": []
     },
     "mining-visualizer": {
@@ -511,7 +767,18 @@
         "Session tracking with data polling"
       ],
       "screenshots": [],
-      "tags": ["JavaScript", "Chart.js", "HTML", "Data Visualization", "Real-Time", "Crypto", "Mining", "Canvas", "APIs", "Dashboard"],
+      "tags": [
+        "JavaScript",
+        "Chart.js",
+        "HTML",
+        "Data Visualization",
+        "Real-Time",
+        "Crypto",
+        "Mining",
+        "Canvas",
+        "APIs",
+        "Dashboard"
+      ],
       "links": []
     }
   }
