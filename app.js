@@ -255,7 +255,7 @@
     }
   }
 
-  const SHARE_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12V14H12V12"/><path d="M8 10V2"/><path d="M5 5L8 2L11 5"/></svg>`;
+  const SHARE_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" stroke="none"><circle cx="12" cy="3" r="2"/><circle cx="12" cy="13" r="2"/><circle cx="4" cy="8" r="2"/><line x1="5.8" y1="7" x2="10.2" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="5.8" y1="9" x2="10.2" y2="12" stroke="currentColor" stroke-width="1.2"/></svg>`;
   const CHECK_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5L6.5 12L13 4"/></svg>`;
 
   function shareButton() {
