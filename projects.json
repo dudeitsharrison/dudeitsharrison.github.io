@@ -162,7 +162,7 @@
       ],
       "availability": "wip",
       "progress": {
-        "core": 80,
+        "core": 82,
         "ui": 75,
         "stability": 50,
         "docs": 30
@@ -779,6 +779,21 @@
         "APIs",
         "Dashboard"
       ],
+      "links": []
+    },
+    "portfolio-admin": {
+      "name": "portfolio-admin",
+      "category": "apps",
+      "status": "wip",
+      "tagline": "",
+      "description": "Desktop admin panel for managing the portfolio site",
+      "tags": [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Electron"
+      ],
+      "screenshots": [],
       "links": []
     }
   }
