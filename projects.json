@@ -785,35 +785,36 @@
     "portfolio-admin": {
       "name": "devPortfolio Admin",
       "category": "dev-tools",
-      "status": "wip",
-      "tagline": "Desktop admin panel for managing your portfolio with one-click deploy.",
-      "description": "An Electron desktop app that gives you full control over your GitHub Pages portfolio without editing JSON by hand. Manage projects,   screenshots, pinned items, categories, themes, and push updates to GitHub from a visual interface. Built for solo devs who want to keep their portfolio   current without touching code.",
+      "status": "beta",
+      "tagline": "Desktop control panel for managing your portfolio site",
+      "description": "An Electron desktop app that serves as a full admin panel for a developer portfolio site. Edit projects, manage pinned showcases,   customize themes with live preview, handle screenshots, and commit/push changes to Git - all from a single native interface.",
       "tags": [
         "Electron",
         "React",
         "TypeScript",
         "Zustand",
-        "Git",
+        "Vite",
         "Desktop App",
-        "Developer Tool",
+        "Developer Tools",
+        "Git Integration",
         "Portfolio",
-        "Productivity",
-        "Vite"
+        "Content Management"
       ],
       "screenshots": [],
       "links": [],
       "highlights": [
-        "Visual project editor with auto-save and progress sliders",
-        "6 theme presets with live preview and custom color pickers",
-        "One-click git commit and push to GitHub Pages",
-        "AI prompt generator with paste-back auto-fill for project details"
+        "Full CRUD for projects with AI-assisted metadata generation",
+        "Built-in Git panel with status, diff preview, commit & push",
+        "Dual theme editor with presets for both portfolio and admin UI",
+        "Project folder scanner that auto-detects tech stack from source files"
       ],
       "progress": {
-        "core": 50,
-        "ui": 50,
-        "stability": 50,
-        "docs": 50
-      }
+        "core": 90,
+        "ui": 75,
+        "stability": 65,
+        "docs": 30
+      },
+      "availability": "wip"
     }
   }
 }
