@@ -628,8 +628,8 @@
       ],
       "availability": "wip",
       "progress": {
-        "core": 70,
-        "ui": 60,
+        "core": 64,
+        "ui": 55,
         "stability": 45,
         "docs": 25
       },
@@ -638,7 +638,7 @@
     "teacher-planner": {
       "name": "Teacher Planner",
       "category": "education",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Curriculum planning with linked lesson plans, term schedules, and school collaboration.",
       "description": "A full-stack planning tool that replaces Excel and Word for design & technology educators. Create three linked document types — Curriculum Overviews, Term Schedules, and Lesson Plans — with 50+ composable section templates (Bloom's taxonomy, WALT, UN SDGs, and more). Supports rich text editing via Tiptap, server-side print routes for A4 landscape PDFs, bilingual UI (English/Thai), and role-based school collaboration.",
       "highlights": [
