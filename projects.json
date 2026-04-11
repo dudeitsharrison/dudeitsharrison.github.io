@@ -239,7 +239,7 @@
     "pokemon-card-tracker": {
       "name": "Thai Pokemon Card Tracker",
       "category": "apps",
-      "status": "beta",
+      "status": "wip",
       "tagline": "Track, scan, and manage your Pokemon card collection across languages.",
       "description": "A full-stack web app for managing Pokemon card collections with multilingual support. Browse thousands of cards across sets, scan cards with your camera, track your collection progress, view stats, and explore Pokemon names across 9 languages. Features three view modes (grid, carousel, table), smart filtering, and a polished Material UI design.",
       "highlights": [
