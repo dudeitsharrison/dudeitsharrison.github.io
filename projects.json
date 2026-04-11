@@ -6,7 +6,7 @@
     "github": "https://github.com/dudeitsharrison",
     "pinned_rotation_ms": 3500
   },
-  "pinned": ["snipboard", "picklepairs", "pokemon-card-tracker"],
+  "pinned": ["snipboard", "picklepairs", "pokemon-card-tracker", "report-repo", "my-big-small-trip", "pc-remote"],
   "categories": {
     "apps": {
       "name": "Apps",
@@ -18,15 +18,15 @@
       "icon": "🛠",
       "description": "Tools for devs, writers, and tinkerers."
     },
-    "games-helpers": {
-      "name": "Game Helpers",
-      "icon": "🎮",
-      "description": "Companion tools for games I play."
+    "education": {
+      "name": "Education",
+      "icon": "🎓",
+      "description": "Tools built for teachers and classrooms."
     },
     "experiments": {
       "name": "Experiments",
       "icon": "🧪",
-      "description": "Prototypes, one-offs, in-progress."
+      "description": "Prototypes, learning projects, in-progress."
     }
   },
   "projects": {
@@ -51,7 +51,7 @@
         "screenshots/snip5.png",
         "screenshots/snipboard-example.gif"
       ],
-      "tags": ["Windows", "Python", "Qt", "Screenshot", "Clipboard", "System Tray", "Productivity", "Hotkeys", "Dark Theme", "Offline"],
+      "tags": ["Windows", "Python", "Qt", "Screenshot", "Clipboard", "Productivity", "Desktop App", "Hotkeys", "Dark Theme", "Offline"],
       "links": [
         { "label": "Buy Pro on Gumroad — $9.99", "url": "https://harrisonengle.gumroad.com/l/okjwv", "primary": true },
         { "label": "Get Free version on Gumroad", "url": "https://harrisonengle.gumroad.com/l/akvydw" }
@@ -83,7 +83,7 @@
         "screenshots/picklepairs/notifications.png",
         "screenshots/picklepairs/export-panel.png"
       ],
-      "tags": ["Web App", "JavaScript", "Mobile-First", "Pickleball", "Tournaments", "Leaderboard", "Statistics", "PWA", "Free"],
+      "tags": ["Web App", "JavaScript", "Mobile-First", "Pickleball", "Sports", "Tournaments", "Leaderboard", "Statistics", "PWA", "Free"],
       "links": [
         { "label": "Open picklepairs.com", "url": "https://www.picklepairs.com", "primary": true }
       ],
@@ -108,7 +108,7 @@
         "screenshots/claude-harry-ui/main.png",
         "screenshots/claude-harry-ui/project2.png"
       ],
-      "tags": ["Windows", "Electron", "TypeScript", "Claude Code", "Terminal", "Syntax Highlighting", "Markdown", "Developer Tool", "Desktop App"],
+      "tags": ["Windows", "Electron", "TypeScript", "Claude Code", "Terminal", "Syntax Highlighting", "Markdown", "Developer Tool", "Desktop App", "AI-Assisted"],
       "availability": "wip",
       "progress": {
         "core": 80,
@@ -130,7 +130,7 @@
         "screenshots/sgu-player/episodes.png",
         "screenshots/sgu-player/playing.png"
       ],
-      "tags": ["PWA", "JavaScript", "Podcast", "Audio", "Offline", "Dark Theme", "RSS", "Mobile-First", "Space UI"],
+      "tags": ["PWA", "JavaScript", "Podcast", "Audio", "Offline", "Dark Theme", "RSS", "Mobile-First", "Music", "Open Source"],
       "links": [
         { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/SGUPlayer", "primary": true }
       ]
@@ -178,7 +178,7 @@
         "screenshots/pokemon-tracker/set-detail.png",
         "screenshots/pokemon-tracker/languages.png"
       ],
-      "tags": ["React", "TypeScript", "Node.js", "PostgreSQL", "Prisma", "Pokemon", "Multilingual", "Camera Scan", "Material UI", "Collection Tracker"],
+      "tags": ["React", "TypeScript", "Node.js", "PostgreSQL", "Pokemon", "Multilingual", "Camera Scan", "Collection", "Full-Stack", "Gaming"],
       "availability": "wip",
       "progress": {
         "core": 85,
@@ -222,6 +222,297 @@
         { "label": "View live site", "url": "https://dudeitsharrison.github.io", "primary": true },
         { "label": "View on GitHub", "url": "https://github.com/dudeitsharrison/dudeitsharrison.github.io" }
       ]
+    },
+    "twentyfour": {
+      "name": "TwentyFour",
+      "category": "education",
+      "status": "beta",
+      "tagline": "Real-time multiplayer math puzzle — combine four numbers to make 24.",
+      "description": "A web-based Game of 24 with single-player and real-time multiplayer modes. Players combine four random numbers using basic operations to reach exactly 24, using an innovative segmented circle UI. Features Socket.IO-powered Team Mode for collaborative solving and Versus Mode for competitive play, with QR code session joining, difficulty levels, and server-side puzzle generation that guarantees every puzzle is solvable.",
+      "highlights": [
+        "Segmented circle UI for intuitive number selection",
+        "Real-time multiplayer with Team and Versus modes",
+        "QR code + session code for instant mobile joining",
+        "Server-side solver guarantees every puzzle is solvable"
+      ],
+      "screenshots": [
+        "screenshots/twentyfour/main.png",
+        "screenshots/twentyfour/gameplay.png",
+        "screenshots/twentyfour/team-mode.png"
+      ],
+      "tags": ["React", "TypeScript", "Socket.IO", "Multiplayer", "Math", "Classroom", "Vite", "Tailwind CSS", "Real-Time", "Full-Stack"],
+      "availability": "wip",
+      "progress": {
+        "core": 75,
+        "ui": 70,
+        "stability": 50,
+        "docs": 30
+      },
+      "links": []
+    },
+    "team-maker": {
+      "name": "Team Maker",
+      "category": "education",
+      "status": "live",
+      "tagline": "Smart team generator with role preferences, pairing constraints, and drag-and-drop.",
+      "description": "A team randomizer built for classrooms and project-based learning. Students rank preferred roles, set do-not-pair and pair-with constraints, and the algorithm assigns balanced teams that respect every rule. Drag-and-drop editing, conflict warnings, pairing matrix view, and PNG export make it easy to adjust and share results. No signup required — runs entirely in the browser.",
+      "highlights": [
+        "Preference-based role assignment with ranked choices",
+        "Do-not-pair and pair-with constraint engine",
+        "Drag-and-drop team editing with conflict warnings",
+        "PNG export and localStorage persistence"
+      ],
+      "screenshots": [
+        "screenshots/team-maker/main.png",
+        "screenshots/team-maker/generated.png",
+        "screenshots/team-maker/teams.png"
+      ],
+      "tags": ["React", "Vite", "JavaScript", "Teachers", "Drag-and-Drop", "Algorithms", "Classroom", "Free", "Offline", "Export"],
+      "links": [
+        { "label": "Open Team Maker", "url": "https://teacherlytics.net/TeamGenerator", "primary": true }
+      ]
+    },
+    "flashcard-maker": {
+      "name": "Deckuration",
+      "category": "education",
+      "status": "beta",
+      "tagline": "Flashcard creator with AI prompts, auto-images, and bulk generation for educators.",
+      "description": "A flashcard creation platform for teachers who need professional cards fast. Paste AI-generated content or type your own, and each card automatically pulls a relevant image from Pixabay, Pexels, or Unsplash. Supports bulk generation from JSON/TXT files, full style customization, deck management, and export to PNG or print-ready layouts. Optional cloud sync with user accounts.",
+      "highlights": [
+        "Auto-fetched images from multiple providers per card",
+        "AI prompt templates for bulk content generation",
+        "Multi-format import (JSON, TXT, real-time text)",
+        "PNG export, batch download, and print-ready layouts"
+      ],
+      "screenshots": [
+        "screenshots/deckuration/main.png",
+        "screenshots/deckuration/cards.png"
+      ],
+      "tags": ["JavaScript", "Node.js", "Express", "MongoDB", "Teachers", "AI-Assisted", "Image API", "Flashcards", "Classroom", "Free"],
+      "availability": "wip",
+      "progress": {
+        "core": 80,
+        "ui": 70,
+        "stability": 55,
+        "docs": 40
+      },
+      "links": []
+    },
+    "report-repo": {
+      "name": "Report Repo",
+      "category": "education",
+      "status": "trial",
+      "tagline": "All-in-one assessment tracker and report generator for educators.",
+      "description": "A full-stack assessment management platform that lets teachers create custom assessments, track student progress in real-time with a dynamic class tracker, and auto-generate personalized reports. Supports school-wide deployments with role-based access, bilingual UI (English and Thai), Google Drive integration, and export to PDF and Excel. Built to replace spreadsheets and give teachers their time back.",
+      "highlights": [
+        "Custom assessment creator with rubrics and comment banks",
+        "Real-time class tracker with automatic progress calculation",
+        "Auto-generated student reports with PDF/Excel export",
+        "School-wide roles, sharing, and Google Drive sync"
+      ],
+      "screenshots": [
+        "screenshots/report-repo/main.png",
+        "screenshots/report-repo/demo-home.png",
+        "screenshots/report-repo/creator.png",
+        "screenshots/report-repo/master-log.png",
+        "screenshots/report-repo/reports.png"
+      ],
+      "tags": ["React", "TypeScript", "Node.js", "MySQL", "Teachers", "i18n", "PDF Export", "Full-Stack", "Classroom", "SaaS"],
+      "links": []
+    },
+    "my-big-small-trip": {
+      "name": "My Big Small Trip",
+      "category": "apps",
+      "status": "beta",
+      "tagline": "Interactive map-based day trip planner with shareable itineraries.",
+      "description": "A full-stack trip planning app for building custom day itineraries on an interactive map. Browse curated locations across multiple regions (Kyoto, Tokyo, Hiroshima, Tampa Bay), create trips, add locations with transit details and costs, visualize routes, and share your plans via unique links with real-time sync. Includes favorites, route optimization, bulk location import, and trip statistics.",
+      "highlights": [
+        "Interactive map with curated location pins and detail cards",
+        "Shareable trip links with real-time collaborative sync",
+        "Multi-region support with 26+ curated locations each",
+        "Trip templates, favorites, and route optimization"
+      ],
+      "screenshots": [
+        "screenshots/my-big-small-trip/main.png",
+        "screenshots/my-big-small-trip/trip-created.png",
+        "screenshots/my-big-small-trip/location-expanded.png",
+        "screenshots/my-big-small-trip/trip-with-routes.png",
+        "screenshots/my-big-small-trip/trip-locations-list.png"
+      ],
+      "tags": ["React", "Node.js", "Express", "Leaflet", "Maps", "Travel", "Sharing", "Mobile-First", "Full-Stack", "Itinerary"],
+      "availability": "wip",
+      "progress": {
+        "core": 75,
+        "ui": 65,
+        "stability": 50,
+        "docs": 30
+      },
+      "links": []
+    },
+    "pc-remote": {
+      "name": "PC-Remote",
+      "category": "apps",
+      "status": "beta",
+      "tagline": "Control your Windows PC from your phone — screen mirror, keyboard, files, and apps.",
+      "description": "A remote desktop app that pairs a Python WebSocket server with a Flutter Android client. Mirror your screen in real-time with adaptive quality, control mouse and keyboard via touch gestures, browse and transfer files, and launch or close applications. QR code pairing with PIN authentication and mDNS auto-discovery make setup instant on your local network.",
+      "highlights": [
+        "Real-time screen mirroring with adaptive quality presets",
+        "Touch trackpad, keyboard, and gesture-based mouse control",
+        "File browser with transfer, rename, delete, and create",
+        "QR code pairing with PIN auth and mDNS discovery"
+      ],
+      "screenshots": [
+        "screenshots/pc-remote/main.png"
+      ],
+      "tags": ["Python", "Flutter", "WebSocket", "Android", "Windows", "Remote Desktop", "Screen Mirror", "File Transfer", "Cross-Platform", "Utility"],
+      "availability": "wip",
+      "progress": {
+        "core": 80,
+        "ui": 70,
+        "stability": 60,
+        "docs": 35
+      },
+      "links": []
+    },
+    "hfs-drive-viewer": {
+      "name": "HFS Drive Viewer",
+      "category": "dev-tools",
+      "status": "beta",
+      "tagline": "Read and write Apple HFS+ drives on Windows with safety-first architecture.",
+      "description": "A Windows desktop app for accessing HFS+ filesystems — Apple's format that Windows can't natively read. Built with .NET 10 and WinUI 3, it implements a clean-room native C parser for HFS+ volumes, write-ahead logging for safe modifications, and an elevated helper process for privilege escalation. Safety checks prevent writes to boot drives or mounted system partitions. Currently supports full read operations with folder creation on physical drives.",
+      "highlights": [
+        "Clean-room HFS+ parser built from Apple's TN1150 spec",
+        "Write-ahead logging with automatic transaction recovery",
+        "8-point safety checklist prevents destructive writes",
+        "Elevated helper via named pipes for privilege isolation"
+      ],
+      "screenshots": [],
+      "tags": ["C#", ".NET 10", "WinUI 3", "C", "Windows", "Filesystem", "HFS+", "Apple", "Desktop App", "Open Source"],
+      "availability": "wip",
+      "progress": {
+        "core": 65,
+        "ui": 50,
+        "stability": 55,
+        "docs": 40
+      },
+      "links": []
+    },
+    "codemap": {
+      "name": "CodeMap",
+      "category": "dev-tools",
+      "status": "beta",
+      "tagline": "Drag-and-drop codebase visualizer with interactive force-directed graphs.",
+      "description": "Drop a project folder and see its architecture as an interactive node-link graph. CodeMap parses source files across multiple languages, extracts dependency relationships (imports, component renders, function calls, CSS references), and renders an animated force-directed layout with D3. Features include a minimap, fuzzy search, file type filtering, and an insights panel with node statistics.",
+      "highlights": [
+        "Force-directed graph visualization with D3 and SVG",
+        "Multi-language dependency extraction (JS, TS, Python, CSS)",
+        "Minimap navigator and fuzzy search with Fuse.js",
+        "Insights panel with per-node statistics"
+      ],
+      "screenshots": [
+        "screenshots/codemap/main.png"
+      ],
+      "tags": ["React", "TypeScript", "D3", "Zustand", "Vite", "Visualization", "Developer Tool", "Graph", "Code Analysis", "Tailwind CSS"],
+      "availability": "wip",
+      "progress": {
+        "core": 70,
+        "ui": 60,
+        "stability": 45,
+        "docs": 25
+      },
+      "links": []
+    },
+    "teacher-planner": {
+      "name": "Teacher Planner",
+      "category": "education",
+      "status": "beta",
+      "tagline": "Curriculum planning with linked lesson plans, term schedules, and school collaboration.",
+      "description": "A full-stack planning tool that replaces Excel and Word for design & technology educators. Create three linked document types — Curriculum Overviews, Term Schedules, and Lesson Plans — with 50+ composable section templates (Bloom's taxonomy, WALT, UN SDGs, and more). Supports rich text editing via Tiptap, server-side print routes for A4 landscape PDFs, bilingual UI (English/Thai), and role-based school collaboration.",
+      "highlights": [
+        "Three-tier linked documents: Curriculum → Schedule → Lesson",
+        "50+ composable section templates with custom profiles",
+        "Rich text editor (Tiptap) with server-side PDF export",
+        "Role-based school collaboration with shared documents"
+      ],
+      "screenshots": [
+        "screenshots/teacher-planner/main.png"
+      ],
+      "tags": ["React", "TypeScript", "Node.js", "MySQL", "Tiptap", "Teachers", "i18n", "PDF Export", "Curriculum", "Full-Stack"],
+      "availability": "wip",
+      "progress": {
+        "core": 70,
+        "ui": 55,
+        "stability": 50,
+        "docs": 30
+      },
+      "links": []
+    },
+    "styles-eliminator": {
+      "name": "Styles Eliminator",
+      "category": "dev-tools",
+      "status": "beta",
+      "tagline": "Chrome extension that detects unused and overridden CSS from DevTools.",
+      "description": "A Manifest V3 Chrome extension that integrates with DevTools to find unused CSS rules. It scans the Styles panel for crossed-out declarations, categorizes them by selector and property, and exports structured reports in JSON for build tool integration. Real-time MutationObserver tracking monitors style changes as you interact with the page.",
+      "highlights": [
+        "DevTools panel integration for live CSS scanning",
+        "Three views: all selectors, unused selectors, unused properties",
+        "JSON export for build tool and CI integration",
+        "Real-time monitoring via MutationObserver"
+      ],
+      "screenshots": [
+        "screenshots/styles-eliminator/popup.png",
+        "screenshots/styles-eliminator/panel.png"
+      ],
+      "tags": ["Chrome Extension", "Manifest V3", "JavaScript", "CSS", "DevTools", "Developer Tool", "Performance", "Web Development", "Browser", "Open Source"],
+      "links": []
+    },
+    "vectme": {
+      "name": "VectMe",
+      "category": "experiments",
+      "status": "learning",
+      "tagline": "GPU-accelerated image-to-vector converter — exploring WebGL, Potrace, and Electron.",
+      "description": "A learning project exploring GPU-accelerated image processing in Electron. Built to understand WebGL shader pipelines for edge detection and color quantization, Potrace integration for raster-to-vector conversion, and Web Worker threading for non-blocking batch operations. The app converts images to SVG, PDF, and EPS with interactive cropping and background removal. Currently non-functional but demonstrates deep exploration of graphics programming and cross-platform desktop builds.",
+      "highlights": [
+        "WebGL shaders for GPU-accelerated image processing",
+        "Batch processing with Web Workers (non-blocking UI)",
+        "Interactive cropping with background removal",
+        "Export to SVG, PDF, and EPS with cross-platform builds"
+      ],
+      "screenshots": [],
+      "tags": ["Electron", "WebGL", "Node.js", "Potrace", "Paper.js", "Image Processing", "Vectorization", "Desktop App", "Cross-Platform", "GPU"],
+      "links": []
+    },
+    "live-translate-scroll": {
+      "name": "Live Translate Scroll",
+      "category": "experiments",
+      "status": "learning",
+      "tagline": "Real-time screen text capture and overlay translation — exploring native mobile APIs.",
+      "description": "A learning project exploring native screen capture and OCR on both Android and iOS. Uses MediaProjection + ML Kit on Android and Screen Recording + UIKit on iOS to capture text from any app, run OCR, and overlay translations in real-time with a floating control panel. Built to understand platform-specific APIs for screen capture, text recognition pipelines, and cross-platform mobile architecture.",
+      "highlights": [
+        "Android MediaProjection API for live screen capture",
+        "ML Kit Text Recognition for real-time OCR",
+        "iOS screen recording with UIKit overlay",
+        "Floating control panel with language switching"
+      ],
+      "screenshots": [],
+      "tags": ["Kotlin", "Swift", "Android", "iOS", "ML Kit", "OCR", "Translation", "Mobile", "Native APIs", "Real-Time"],
+      "links": []
+    },
+    "mining-visualizer": {
+      "name": "Mining Visualizer",
+      "category": "experiments",
+      "status": "learning",
+      "tagline": "Real-time crypto mining dashboard — exploring Chart.js, polling APIs, and data visualization.",
+      "description": "A learning project exploring real-time data visualization with Chart.js. Polls local mining software (T-Rex, SRB-Multi) and renders 8 interactive metrics — hashrate, power, temperature, fan speed, efficiency, shares/minute, accepted shares, and watchdog restarts — with zoom, pan, and session tracking. Built to understand charting libraries, real-time data pipelines, and interactive canvas-based UIs.",
+      "highlights": [
+        "8 real-time metrics with interactive Chart.js graphs",
+        "Zoom, pan, and tooltips on all charts",
+        "Multi-miner support (T-Rex, SRB-Multi)",
+        "Session tracking with data polling"
+      ],
+      "screenshots": [],
+      "tags": ["JavaScript", "Chart.js", "HTML", "Data Visualization", "Real-Time", "Crypto", "Mining", "Canvas", "APIs", "Dashboard"],
+      "links": []
     }
   }
 }
