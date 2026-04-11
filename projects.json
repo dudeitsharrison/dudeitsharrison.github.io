@@ -783,19 +783,37 @@
       "links": []
     },
     "portfolio-admin": {
-      "name": "portfolio-admin",
-      "category": "apps",
+      "name": "devPortfolio Admin",
+      "category": "dev-tools",
       "status": "wip",
-      "tagline": "",
-      "description": "Desktop admin panel for managing the portfolio site",
+      "tagline": "Desktop admin panel for managing your portfolio with one-click deploy.",
+      "description": "An Electron desktop app that gives you full control over your GitHub Pages portfolio without editing JSON by hand. Manage projects,   screenshots, pinned items, categories, themes, and push updates to GitHub from a visual interface. Built for solo devs who want to keep their portfolio   current without touching code.",
       "tags": [
+        "Electron",
         "React",
         "TypeScript",
-        "Vite",
-        "Electron"
+        "Zustand",
+        "Git",
+        "Desktop App",
+        "Developer Tool",
+        "Portfolio",
+        "Productivity",
+        "Vite"
       ],
       "screenshots": [],
-      "links": []
+      "links": [],
+      "highlights": [
+        "Visual project editor with auto-save and progress sliders",
+        "6 theme presets with live preview and custom color pickers",
+        "One-click git commit and push to GitHub Pages",
+        "AI prompt generator with paste-back auto-fill for project details"
+      ],
+      "progress": {
+        "core": 50,
+        "ui": 50,
+        "stability": 50,
+        "docs": 50
+      }
     }
   }
 }
