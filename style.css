@@ -3,16 +3,45 @@
    ========================================================================== */
 
 :root {
+  /* Core theme */
   --bg: #F7C52D;
   --fg: #0A0A0A;
   --fg-dim: #3A3A3A;
   --fg-faint: #6a5a12;
   --accent: #000000;
   --error: #B91C1C;
+
+  /* Borders & overlays */
   --rule: rgba(10, 10, 10, 0.22);
   --rule-soft: rgba(10, 10, 10, 0.10);
   --hover-bg: rgba(10, 10, 10, 0.08);
   --spotlight-bg: rgba(10, 10, 10, 0.055);
+  --overlay-subtle: rgba(10, 10, 10, 0.04);
+  --overlay-light: rgba(10, 10, 10, 0.08);
+  --overlay-medium: rgba(10, 10, 10, 0.12);
+  --overlay-heavy: rgba(10, 10, 10, 0.22);
+  --overlay-dark: rgba(10, 10, 10, 0.88);
+
+  /* Status shimmer colors */
+  --status-green: #4ade80;
+  --status-green-bright: #22ff77;
+  --status-orange: #fb923c;
+  --status-orange-bright: #ff7b00;
+  --status-yellow: #fbbf24;
+  --status-yellow-bright: #f59e0b;
+  --status-blue-light: #a5d8ff;
+  --status-blue: #4dabf7;
+  --status-blue-dark: #1971c2;
+  --status-purple: #d8b4fe;
+  --status-purple-bright: #a855f7;
+
+  /* Claude terminal colors */
+  --claude-blue: #60a5fa;
+  --claude-green: #4ade80;
+  --claude-purple: #c084fc;
+  --claude-err: #f87171;
+
+  /* Layout */
   --max-width: 860px;
   --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Menlo', 'Courier New', monospace;
 }
@@ -333,9 +362,9 @@ hr.rule {
     90deg,
     var(--fg) 0%,
     var(--fg) 35%,
-    #4ade80 45%,
-    #22ff77 50%,
-    #4ade80 55%,
+    var(--status-green) 45%,
+    var(--status-green-bright) 50%,
+    var(--status-green) 55%,
     var(--fg) 65%,
     var(--fg) 100%
   );
@@ -355,9 +384,9 @@ hr.rule {
     90deg,
     var(--fg) 0%,
     var(--fg) 35%,
-    #fb923c 45%,
-    #ff7b00 50%,
-    #fb923c 55%,
+    var(--status-orange) 45%,
+    var(--status-orange-bright) 50%,
+    var(--status-orange) 55%,
     var(--fg) 65%,
     var(--fg) 100%
   );
@@ -377,9 +406,9 @@ hr.rule {
     90deg,
     var(--fg) 0%,
     var(--fg) 35%,
-    #fbbf24 45%,
-    #f59e0b 50%,
-    #fbbf24 55%,
+    var(--status-yellow) 45%,
+    var(--status-yellow-bright) 50%,
+    var(--status-yellow) 55%,
     var(--fg) 65%,
     var(--fg) 100%
   );
@@ -399,11 +428,11 @@ hr.rule {
     90deg,
     var(--fg) 0%,
     var(--fg) 30%,
-    #a5d8ff 40%,
-    #4dabf7 48%,
-    #1971c2 52%,
-    #4dabf7 56%,
-    #a5d8ff 60%,
+    var(--status-blue-light) 40%,
+    var(--status-blue) 48%,
+    var(--status-blue-dark) 52%,
+    var(--status-blue) 56%,
+    var(--status-blue-light) 60%,
     var(--fg) 70%,
     var(--fg) 100%
   );
@@ -423,9 +452,9 @@ hr.rule {
     90deg,
     var(--fg) 0%,
     var(--fg) 35%,
-    #d8b4fe 45%,
-    #a855f7 50%,
-    #d8b4fe 55%,
+    var(--status-purple) 45%,
+    var(--status-purple-bright) 50%,
+    var(--status-purple) 55%,
     var(--fg) 65%,
     var(--fg) 100%
   );
