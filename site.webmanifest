@@ -1,0 +1,11 @@
+{
+  "name": "Harrison Engle — tools for efficiency",
+  "short_name": "Harrison Engle",
+  "icons": [
+    { "src": "favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "favicon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#F7C52D",
+  "background_color": "#F7C52D",
+  "display": "standalone"
+}

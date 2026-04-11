@@ -527,7 +527,9 @@
         "stability": 50,
         "docs": 30
       },
-      "links": []
+      "links": [],
+      "hidden": false,
+      "lastModified": 1775921722753
     },
     "pc-remote": {
       "name": "PC-Remote",
