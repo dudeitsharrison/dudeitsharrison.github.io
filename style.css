@@ -135,13 +135,16 @@ a.brand-link:hover { background: transparent; color: inherit; }
   opacity: 0.7;
   transition: opacity 150ms ease;
   flex-shrink: 0;
+  background: transparent !important;
 }
-a.corner-logo:hover { opacity: 1; background: transparent; color: inherit; }
+a.corner-logo:hover { opacity: 1; color: inherit; }
 .corner-logo .logo-svg {
   width: 44px;
   height: auto;
   color: var(--fg);
+  transition: color 150ms ease;
 }
+.corner-logo:hover .logo-svg { color: var(--accent); }
 .corner-logo .logo-svg.nudge {
   animation: logoNudge 0.6s ease-in-out;
 }
