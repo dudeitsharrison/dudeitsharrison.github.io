@@ -42,6 +42,7 @@
   "projects": {
     "snipboard": {
       "name": "Snipboard",
+      "folderName": "Snipboard",
       "category": "apps",
       "status": "live",
       "logo": "screenshots/snipboard-logo.png",
@@ -87,6 +88,7 @@
     },
     "picklepairs": {
       "name": "PicklePairs",
+      "folderName": "React Pickle Pairs",
       "category": "apps",
       "status": "live",
       "logo": "screenshots/picklepairs/logo.png",
@@ -143,6 +145,7 @@
     },
     "claude-harry-ui": {
       "name": "Claude Harry's UI",
+      "folderName": "Claude Harry's UI",
       "category": "dev-tools",
       "status": "wip",
       "tagline": "Electron desktop wrapper that gives Claude Code a proper UI.",
@@ -174,6 +177,7 @@
     },
     "skeptics-guide-player": {
       "name": "Skeptics Guide Player",
+      "folderName": "Skeptics Guide Player",
       "category": "apps",
       "status": "live",
       "logo": "screenshots/sgu-logo.svg",
@@ -206,6 +210,7 @@
     },
     "transcribe-tutorials": {
       "name": "TranscribeTutorials",
+      "folderName": "TranscribeTutorials",
       "category": "dev-tools",
       "status": "beta",
       "tagline": "AI video transcription with automatic chapter indexing.",
@@ -240,6 +245,7 @@
     },
     "pokemon-card-tracker": {
       "name": "Thai Pokemon Card Tracker",
+      "folderName": "Thai Pokemon Card Tracker",
       "category": "apps",
       "status": "wip",
       "tagline": "Track, scan, and manage your Pokemon card collection across languages.",
@@ -281,6 +287,7 @@
     },
     "nas-installer-helper": {
       "name": "NAS Installer Helper",
+      "folderName": "nas-installer-helper",
       "category": "dev-tools",
       "status": "live",
       "tagline": "Let Windows installers write to mapped NAS drives without \"invalid drive\" crashes.",
@@ -309,6 +316,7 @@
     },
     "portfolio-site": {
       "name": "Portfolio Site",
+      "folderName": "portfolio-site",
       "category": "dev-tools",
       "status": "live",
       "tagline": "Terminal-themed portfolio with interactive CLI, search, and a Claude Code simulator.",
@@ -348,6 +356,7 @@
     },
     "twentyfour": {
       "name": "TwentyFour",
+      "folderName": "TwentyFour",
       "category": "education",
       "status": "beta",
       "tagline": "Real-time multiplayer math puzzle — combine four numbers to make 24.",
@@ -386,6 +395,7 @@
     },
     "team-maker": {
       "name": "Team Maker",
+      "folderName": "Team Maker",
       "category": "education",
       "status": "live",
       "tagline": "Smart team generator with role preferences, pairing constraints, and drag-and-drop.",
@@ -423,6 +433,7 @@
     },
     "flashcard-maker": {
       "name": "Deckuration",
+      "folderName": "FlashCard Maker",
       "category": "education",
       "status": "beta",
       "tagline": "Flashcard creator with AI prompts, auto-images, and bulk generation for educators.",
@@ -460,6 +471,7 @@
     },
     "report-repo": {
       "name": "Report Repo",
+      "folderName": "Report Repo",
       "category": "education",
       "status": "trial",
       "tagline": "All-in-one assessment tracker and report generator for educators.",
@@ -493,6 +505,7 @@
     },
     "my-big-small-trip": {
       "name": "My Big Small Trip",
+      "folderName": "React Kyoto Day Trips",
       "category": "apps",
       "status": "wip",
       "tagline": "Interactive map-based day trip planner with shareable itineraries.",
@@ -535,6 +548,7 @@
     },
     "pc-remote": {
       "name": "PC-Remote",
+      "folderName": "PC-Remote",
       "category": "apps",
       "status": "wip",
       "tagline": "Control your Windows PC from your phone — screen mirror, keyboard, files, and apps.",
@@ -571,6 +585,7 @@
     },
     "hfs-drive-viewer": {
       "name": "HFS Drive Viewer",
+      "folderName": "HFS Drive Viewer",
       "category": "dev-tools",
       "status": "wip",
       "tagline": "Read and write Apple HFS+ drives on Windows with safety-first architecture.",
@@ -605,6 +620,7 @@
     },
     "codemap": {
       "name": "CodeMap",
+      "folderName": "CodeMap",
       "category": "dev-tools",
       "status": "learning",
       "tagline": "Drag-and-drop codebase visualizer with interactive force-directed graphs.",
@@ -641,6 +657,7 @@
     },
     "teacher-planner": {
       "name": "Teacher Planner",
+      "folderName": "Teacher Planner",
       "category": "education",
       "status": "wip",
       "tagline": "Curriculum planning with linked lesson plans, term schedules, and school collaboration.",
@@ -677,6 +694,7 @@
     },
     "styles-eliminator": {
       "name": "Styles Eliminator",
+      "folderName": "Styles Eliminator",
       "category": "dev-tools",
       "status": "beta",
       "tagline": "Chrome extension that detects unused and overridden CSS from DevTools.",
@@ -707,6 +725,7 @@
     },
     "vectme": {
       "name": "VectMe",
+      "folderName": "VectMe",
       "category": "experiments",
       "status": "learning",
       "tagline": "GPU-accelerated image-to-vector converter — exploring WebGL, Potrace, and Electron.",
@@ -734,6 +753,7 @@
     },
     "live-translate-scroll": {
       "name": "Live Translate Scroll",
+      "folderName": "Live Translate Scroll",
       "category": "experiments",
       "status": "learning",
       "tagline": "Real-time screen text capture and overlay translation — exploring native mobile APIs.",
@@ -761,6 +781,7 @@
     },
     "mining-visualizer": {
       "name": "Mining Visualizer",
+      "folderName": "Mining Visualizer",
       "category": "experiments",
       "status": "learning",
       "tagline": "Real-time crypto mining dashboard — exploring Chart.js, polling APIs, and data visualization.",
@@ -788,6 +809,7 @@
     },
     "portfolio-admin": {
       "name": "devPortfolio Admin",
+      "folderName": "devPortfolio-admin",
       "category": "dev-tools",
       "status": "wip",
       "tagline": "Desktop control panel for managing your portfolio site",
