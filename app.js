@@ -1758,7 +1758,7 @@
   async function rollLogoAnimation(startFromHover) {
     const corner = document.querySelector('.corner-logo');
     const img = corner.querySelector('.logo-svg');
-    const ROLL_TEXT = 'devP';
+    const ROLL_TEXT = state.data?.meta?.logo_roll_text || 'devP';
     const MIN_STEPS = 6; // minimum for the flip-inversion physics to work
     const LETTERS = [...ROLL_TEXT];
     // Pad with empty slots if text is shorter than MIN_STEPS
