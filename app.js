@@ -57,6 +57,30 @@
 
   const clear = (el) => { while (el.firstChild) el.removeChild(el.firstChild); };
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // Inline the hex logo SVG with path fill = currentColor so it inherits --fg
+  let _logoSvgText;
+  async function createLogoSvg(width) {
+    if (!_logoSvgText) _logoSvgText = await fetch('logo3.svg').then(r => r.text());
+    const doc = new DOMParser().parseFromString(_logoSvgText, 'image/svg+xml');
+    const svg = doc.documentElement;
+    const path = svg.querySelector('path');
+    if (path) path.setAttribute('fill', 'currentColor');
+    svg.style.width = width + 'px';
+    svg.style.height = 'auto';
+    svg.style.display = 'block';
+    svg.classList.add('logo-svg');
+    return svg;
+  }
+  const awaitTransition = (el, dur) => new Promise(r => {
+    const fallback = setTimeout(r, dur + 200);
+    el.addEventListener('transitionend', function handler(e) {
+      if (e.target === el) {
+        clearTimeout(fallback);
+        el.removeEventListener('transitionend', handler);
+        r();
+      }
+    });
+  });
 
   // Build a logo element for a project. Uses proj.logo (image path) if present,
   // otherwise falls back to a single-letter text icon using the first letter of the name.
@@ -295,8 +319,19 @@
     clear(SCREEN);
     SCREEN.classList.add('boot');
 
+    // Logo + name with diagonal reveal
+    const logo = h('div', { class: 'boot-logo' });
+    logo.appendChild(await createLogoSvg(120));
+    logo.appendChild(h('div', { class: 'boot-logo-name', text: 'Harrison Engle' }));
+    SCREEN.appendChild(logo);
+
+    // Typing lines below the logo
+    const typing = h('div', { class: 'boot-typing' });
+    SCREEN.appendChild(typing);
+
+    await sleep(200);
     const { line: l1, typePromise: p1 } = promptLine(BOOT_URL);
-    SCREEN.appendChild(l1);
+    typing.appendChild(l1);
     await p1;
     l1.querySelector('.cursor')?.remove();
 
@@ -307,12 +342,15 @@
     const l2cmd = h('span', { class: 'prompt-cmd' });
     l2.appendChild(l2cmd);
     l2.appendChild(h('span', { class: 'cursor', text: '█' }));
-    SCREEN.appendChild(l2);
+    typing.appendChild(l2);
     await typeInto(l2cmd, 'Connected. Loading workspace...', 14);
     l2.querySelector('.cursor')?.remove();
 
-    await sleep(150);
-    SCREEN.classList.remove('boot');
+    // Fade out boot screen
+    await sleep(300);
+    SCREEN.classList.add('boot-fade-out');
+    await sleep(500);
+    SCREEN.classList.remove('boot', 'boot-fade-out');
     state.bootDone = true;
     termFocusPending = true;
     renderHome();
@@ -1604,9 +1642,10 @@
   }
 
   // --- View counter (GoatCounter) ---
-  const GC_SITE = state.data?.meta?.goatcounter_site || '';
+  function getGcSite() { return state.data?.meta?.goatcounter_site || ''; }
 
   addCmd('stats', 'show page view stats', () => {
+    const GC_SITE = getGcSite();
     const gcUrl = `https://${GC_SITE}.goatcounter.com`;
     // Try fetching via an img beacon trick to avoid ad blocker interference
     const id = 'stats-' + Date.now();
@@ -1692,11 +1731,523 @@
     } catch { /* theme.json is optional */ }
   }
 
+  // --- Rolling logo animation ---------------------------------------------------
+  async function rollLogoAnimation(startFromHover) {
+    const corner = document.querySelector('.corner-logo');
+    const img = corner.querySelector('.logo-svg');
+    const ROLL_TEXT = 'devP';
+    const MIN_STEPS = 6; // minimum for the flip-inversion physics to work
+    const LETTERS = [...ROLL_TEXT];
+    // Pad with empty slots if text is shorter than MIN_STEPS
+    const STEPS = Math.max(LETTERS.length, MIN_STEPS);
+    const _log = [];
+    function _t(label, elem) {
+      const r = elem.getBoundingClientRect();
+      _log.push({phase:label, left:+r.left.toFixed(2), top:+r.top.toFixed(2), cx:+(r.left+r.width/2).toFixed(2), cy:+(r.top+r.height/2).toFixed(2), crnrL:corner.style.left||'(css)', crnrT:corner.style.top||'(css)', transform:elem.style.transform||'none', origin:elem.style.transformOrigin||'default'});
+    }
+    // Compute both flip angles so total rotation closes (multiple of 360).
+    // Total = 30 + STEPS*60 + FLIP1 + (STEPS-1)*60 + FLIP2 = 360*N
+    // So: FLIP1 + FLIP2 = 360*N - 120*STEPS + 30
+    const _flipN = Math.ceil((120 * STEPS + 210) / 360);
+    const _flipSum = 360 * _flipN - 120 * STEPS + 30;
+    let FLIP1_ANGLE = Math.ceil(_flipSum / 2 / 60) * 60;
+    let FLIP2_ANGLE = _flipSum - FLIP1_ANGLE;
+    // Ensure FLIP2 is at least 120° (2 hex faces) so the return flip looks complete
+    if (FLIP2_ANGLE < 120) {
+      FLIP2_ANGLE = 120;
+      FLIP1_ANGLE = _flipSum - 120;
+    }
+    const imgW = img.offsetWidth || 44;
+    // Hex geometry: polygon spans x=3..218, y=3..246 in 221×246 viewBox
+    const polyWidth = imgW * (215 / 221);
+    const hexSide = polyWidth / Math.sqrt(3);
+    const STEP_SHIFT = hexSide;  // center displacement per roll step
+    const LIFT_Y = imgW * 0.15;
+
+    // Hex polygon center (110.667, 124.167) differs from viewBox center (110.5, 123).
+    // Use polygon center as rotation origin so the hex rolls naturally.
+    const _svgVerts = [[111,3],[218,65],[218,183],[111,246],[3,183],[3,65]];
+    const _polyCx = _svgVerts.reduce((s,[x])=>s+x,0) / 6;   // 110.667
+    const _polyCy = _svgVerts.reduce((s,[,y])=>s+y,0) / 6;   // 124.167
+    const _s = imgW / 221;
+    const _pcx = _polyCx * _s, _pcy = _polyCy * _s;  // polygon center in element px
+    const _originX = (_polyCx / 221 * 100).toFixed(3);  // % for CSS transform-origin
+    const _originY = (_polyCy / 246 * 100).toFixed(3);
+    const _hexVerts = _svgVerts
+      .map(([x,y]) => [x * _s - _pcx, y * _s - _pcy]);
+    // Compute screen position of polygon center given corner pos, origin, and rotation
+    function polyScreenPos(cornerX, cornerY, originX, originY, degR) {
+      const rad = degR * Math.PI / 180;
+      const dx = _pcx - originX, dy = _pcy - originY;
+      return [
+        cornerX + originX + dx * Math.cos(rad) - dy * Math.sin(rad),
+        cornerY + originY + dx * Math.sin(rad) + dy * Math.cos(rad),
+      ];
+    }
+    function hexBottomExtent(degR) {
+      const rad = degR * Math.PI / 180;
+      const sinR = Math.sin(rad), cosR = Math.cos(rad);
+      let maxY = -Infinity;
+      for (const [dx, dy] of _hexVerts) {
+        const ry = dx * sinR + dy * cosR;
+        if (ry > maxY) maxY = ry;
+      }
+      return maxY;
+    }
+    function hexTopExtent(degR) {
+      const rad = degR * Math.PI / 180;
+      const sinR = Math.sin(rad), cosR = Math.cos(rad);
+      let minY = Infinity;
+      for (const [dx, dy] of _hexVerts) {
+        const ry = dx * sinR + dy * cosR;
+        if (ry < minY) minY = ry;
+      }
+      return minY;
+    }
+    const baseExtent = hexBottomExtent(0); // bottom extent at rest (0deg)
+    const baseTopExtent = hexTopExtent(0); // top extent at rest (0deg)
+
+    // Marks container
+    let marksEl, el;
+    try {
+    marksEl = document.createElement('div');
+    Object.assign(marksEl.style, {
+      position: 'fixed', inset: '0', zIndex: '4', pointerEvents: 'none',
+    });
+    document.body.appendChild(marksEl);
+
+    corner.style.opacity = '1';
+    corner.style.pointerEvents = 'none';
+
+    // Fetch SVG (cached), inject background hex polygon, inline it
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F7C52D';
+    if (!_logoSvgText) _logoSvgText = await fetch('logo3.svg').then(r => r.text());
+    const svgText = _logoSvgText;
+    const svgDoc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+    const inlineSvg = svgDoc.documentElement;
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const bgHex = document.createElementNS(svgNS, 'polygon');
+    bgHex.setAttribute('points', '111,3 218,65 218,183 111,246 3,183 3,65');
+    bgHex.setAttribute('fill', bgColor);
+    inlineSvg.insertBefore(bgHex, inlineSvg.firstChild);
+    // Adapt path fill to theme so logo is visible on all backgrounds
+    const fgColor = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#0A0A0A';
+    const pathEl = inlineSvg.querySelector('path');
+    if (pathEl) pathEl.setAttribute('fill', fgColor);
+    inlineSvg.style.width = imgW + 'px';
+    inlineSvg.style.height = 'auto';
+    inlineSvg.style.display = 'block';
+    // Clip to hex polygon so the rectangular SVG boundary doesn't extend past the hex
+    inlineSvg.style.clipPath = 'polygon(50.2% 1.2%, 98.6% 26.4%, 98.6% 74.4%, 50.2% 100%, 1.4% 74.4%, 1.4% 26.4%)';
+
+    // Capture the resting position (no transform) for accurate start/end alignment
+    const savedTransform = img.style.transform || '';
+    img.style.transition = 'none';
+    img.style.transform = '';
+    img.offsetHeight;
+    const restRect = img.getBoundingClientRect();
+    const restCx = restRect.left + restRect.width / 2;
+    const restCy = restRect.top + restRect.height / 2;
+    const groundY = restRect.top + restRect.height;
+    // Restore current transform for seamless handoff
+    img.style.transform = savedTransform;
+    img.offsetHeight;
+
+    // Start the inline SVG from wherever the img currently is (hover or idle)
+    inlineSvg.style.transition = 'none';
+    inlineSvg.style.transform = savedTransform;
+
+    img.style.display = 'none';
+    corner.appendChild(inlineSvg);
+    corner.style.zIndex = '6';
+    el = inlineSvg;
+    el.offsetHeight;
+    _t('START', el);
+    console.log('[config]', {STEPS, FLIP1_ANGLE, FLIP2_ANGLE, _flipSum});
+    // Center letters within the roll steps (pad evenly on both sides)
+    const padLeft = Math.floor((STEPS - LETTERS.length) / 2);
+    const letterEls = [];
+    for (let li = 0; li < LETTERS.length; li++) {
+      const lx = restCx + STEP_SHIFT * (padLeft + li + 1);
+      const letter = document.createElement('div');
+      Object.assign(letter.style, {
+        position: 'fixed',
+        left: lx + 'px',
+        top: (groundY - imgW * 0.42) + 'px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: (imgW * 0.38) + 'px',
+        fontWeight: '800',
+        color: 'var(--fg)',
+        opacity: '0',
+        transform: 'translateX(-50%) translateY(3px)',
+        transition: 'opacity 0.2s ease, transform 0.2s ease',
+        pointerEvents: 'none',
+        zIndex: '3',
+      });
+      letter.textContent = LETTERS[li];
+      marksEl.appendChild(letter);
+      letterEls.push(letter);
+    }
+
+    // Rotate around polygon center, not viewBox center
+    el.style.transformOrigin = `${_originX}% ${_originY}%`;
+
+    let rotation = 30; // flat on ground
+    let shiftX = 0;
+
+    for (let i = 0; i < STEPS; i++) {
+      const shiftAtTip = shiftX + STEP_SHIFT * 0.3;
+
+      if (i === 0 && startFromHover) {
+        // Already at the tipping point from hover — skip struggle, just do gravity drop
+      } else {
+        // Phase 1: Struggle up to tipping point
+        const dur1 = 350 + Math.random() * 40;
+        el.style.transition = `transform ${dur1}ms cubic-bezier(0.2, 0, 0.6, 1)`;
+        const p1 = awaitTransition(el, dur1);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          el.style.transform = `translateX(${shiftAtTip}px) translateY(-${LIFT_Y}px) rotate(${rotation + 30}deg)`;
+        }));
+        await p1;
+      }
+
+      // Phase 2: Gravity drops to next flat — Y-correct so hex bottom stays on ground
+      shiftX += STEP_SHIFT;
+      const landRot = rotation + 60;
+      const yCorr = baseExtent - hexBottomExtent(landRot);
+      const dur2 = 140 + Math.random() * 20;
+      el.style.transition = `transform ${dur2}ms cubic-bezier(0.4, 0, 1, 0.6)`;
+      const p2 = awaitTransition(el, dur2);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transform = `translateX(${shiftX}px) translateY(${yCorr}px) rotate(${landRot}deg)`;
+      }));
+      await p2;
+
+      rotation += 60;
+      _t(`FWD ${i} (rot=${rotation})`, el);
+      // Stamp mark line + the letter is already there, now visible
+      const elRect = el.getBoundingClientRect();
+      const cx = elRect.left + elRect.width / 2;
+      const flatW = polyWidth * 0.5;
+
+      const mark = document.createElement('div');
+      Object.assign(mark.style, {
+        position: 'fixed',
+        left: (cx - flatW / 2) + 'px',
+        top: groundY + 'px',
+        width: flatW + 'px',
+        height: '3px',
+        background: 'var(--fg)',
+        borderRadius: '1.5px',
+        opacity: '0',
+        transform: 'scaleX(0.4)',
+        transition: 'opacity 0.15s ease, transform 0.15s ease',
+      });
+      marksEl.appendChild(mark);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        mark.style.opacity = '0.45';
+        mark.style.transform = 'scaleX(1)';
+        // Reveal paired letter at the ground line (offset by padLeft)
+        const li = i - padLeft;
+        if (li >= 0 && li < letterEls.length) {
+          letterEls[li].style.top = (groundY - imgW * 0.38) + 'px';
+          letterEls[li].style.opacity = '0.75';
+          letterEls[li].style.transform = 'translateX(-50%) translateY(0)';
+        }
+      }));
+
+      await sleep(30 + Math.random() * 20);
+    }
+
+    // Pause at end of message
+    await sleep(200);
+
+    // --- Tip off the edge: pivot on bottom-right vertex ---
+    // No wrapper — change transform-origin directly, compensate with corner position.
+
+    // Find which hex vertex is at ground-right in LOCAL (unrotated) SVG coords
+    // Use polygon center as rotation origin (matches CSS transform-origin)
+    const hexVerts = _svgVerts.map(([x,y]) => [x/221, y/246]);
+    const _polyCxN = _polyCx / 221, _polyCyN = _polyCy / 246;
+    const elNativeH = imgW * (246 / 221);
+    const rad = rotation * Math.PI / 180;
+    const cosR = Math.cos(rad), sinR = Math.sin(rad);
+    // Compute rotated positions relative to polygon center
+    const rotatedVerts = hexVerts.map(([vxp, vyp]) => {
+      const lx = (vxp - _polyCxN) * imgW;
+      const ly = (vyp - _polyCyN) * elNativeH;
+      return { vxp, vyp, rx: lx * cosR - ly * sinR, ry: lx * sinR + ly * cosR };
+    });
+    // Find the max Y (lowest on screen = ground level)
+    const maxRy = Math.max(...rotatedVerts.map(v => v.ry));
+    // Among all vertices at ground level (within 2px), pick the rightmost
+    const groundVerts = rotatedVerts.filter(v => v.ry > maxRy - 2);
+    groundVerts.sort((a, b) => b.rx - a.rx); // rightmost first
+    const bestVert = [groundVerts[0].vxp, groundVerts[0].vyp];
+
+    // All positions computed mathematically — no getBoundingClientRect errors
+    const cornerLeft = 12, cornerTop = 12;
+    const lastYCorr = baseExtent - hexBottomExtent(rotation);
+    const pvx1 = bestVert[0] * imgW, pvy1 = bestVert[1] * elNativeH;
+
+    // Polygon center screen pos before flip (with polygon-center origin, translate baked)
+    const bakeL = cornerLeft + shiftX, bakeT = cornerTop + lastYCorr;
+    // With polygon-center origin: screen_pc = corner + _pcx (rotation doesn't move it)
+    const prePcx = bakeL + _pcx, prePcy = bakeT + _pcy;
+
+    // Compute corner offset so that pivot-vertex origin at this rotation keeps pc in place
+    const [pcAtPivot_x, pcAtPivot_y] = polyScreenPos(0, 0, pvx1, pvy1, rotation);
+    const compL = bakeL + (_pcx - pcAtPivot_x);
+    const compT = bakeT + (_pcy - pcAtPivot_y);
+
+    // Compute where corner should end after flip1 so the reverse roll sits lower.
+    const DROP_EXTRA = imgW * 0.12;
+    const postRotation = rotation + FLIP1_ANGLE;
+    const [natPcx, natPcy] = polyScreenPos(compL, compT, pvx1, pvy1, postRotation);
+    const flip1TopCorr = baseTopExtent - hexTopExtent(postRotation);
+    const targetPcx = natPcx;
+    const targetPcy = natPcy + DROP_EXTRA + flip1TopCorr;
+    const postRad = postRotation * Math.PI / 180;
+    const cR = Math.cos(postRad), sR = Math.sin(postRad);
+    const dxp = _pcx - pvx1, dyp = _pcy - pvy1;
+    const targetCornerL = targetPcx - pvx1 - dxp * cR + dyp * sR;
+    const targetCornerT = targetPcy - pvy1 - dxp * sR - dyp * cR;
+
+    // Set up: bake corner position with jump compensation, pivot origin
+    corner.style.left = compL + 'px';
+    corner.style.top = compT + 'px';
+    el.style.transition = 'none';
+    el.style.transform = `rotate(${rotation}deg)`;
+    el.style.transformOrigin = `${bestVert[0] * 100}% ${bestVert[1] * 100}%`;
+    corner.style.transition = 'none';
+    el.offsetHeight;
+    void corner.offsetHeight; // extra reflow: ensure browser commits setup before transition
+
+    // Animate flip rotation + corner slide simultaneously
+    const flip1Easing = 'cubic-bezier(0.1, 0, 0.4, 1)';
+    const flip1Dur = 1200;
+    el.style.transition = `transform ${flip1Dur}ms ${flip1Easing}`;
+    corner.style.transition = `left ${flip1Dur}ms ${flip1Easing}, top ${flip1Dur}ms ${flip1Easing}`;
+    const pFlip1 = awaitTransition(el, flip1Dur);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      rotation += FLIP1_ANGLE;
+      el.style.transform = `rotate(${rotation}deg)`;
+      corner.style.left = targetCornerL + 'px';
+      corner.style.top = targetCornerT + 'px';
+    }));
+    await pFlip1;
+    _t('FLIP1 done', el);
+
+    // Compute polygon center at flip endpoint (using target corner)
+    const [postPcx, postPcy] = polyScreenPos(targetCornerL, targetCornerT, pvx1, pvy1, rotation);
+    shiftX = postPcx - cornerLeft - _pcx;
+    let dropY = postPcy - cornerTop - _pcy;
+
+    el.style.transition = 'none';
+    corner.style.transition = 'none';
+    el.style.transformOrigin = `${_originX}% ${_originY}%`;
+    corner.style.left = cornerLeft + 'px';
+    corner.style.top = cornerTop + 'px';
+    el.style.transform = `translateX(${shiftX}px) translateY(${dropY}px) rotate(${rotation}deg)`;
+    el.offsetHeight;
+    _t(`FLIP1 reset (shX=${shiftX.toFixed(1)} drY=${dropY.toFixed(1)})`, el);
+    await sleep(200);
+
+    // --- Pre-compute where the reverse roll must end for flip2 to land at rest ---
+    // Flip2 starts at the rotation after all reverse steps
+    const revSteps = STEPS - 1;
+    const flip2Rot = rotation + revSteps * 60;
+    const rad2 = flip2Rot * Math.PI / 180;
+    const cosR2 = Math.cos(rad2), sinR2 = Math.sin(rad2);
+    const rotatedVerts2 = hexVerts.map(([vxp, vyp]) => {
+      const lx = (vxp - _polyCxN) * imgW;
+      const ly = (vyp - _polyCyN) * elNativeH;
+      return { vxp, vyp, rx: lx * cosR2 - ly * sinR2, ry: lx * sinR2 + ly * cosR2 };
+    });
+    const minRy2 = Math.min(...rotatedVerts2.map(v => v.ry));
+    const topVerts2 = rotatedVerts2.filter(v => v.ry < minRy2 + 2);
+    topVerts2.sort((a, b) => a.rx - b.rx);
+    const bestVert2 = [topVerts2[0].vxp, topVerts2[0].vyp];
+    const pvx2 = bestVert2[0] * imgW, pvy2 = bestVert2[1] * elNativeH;
+
+    // For flip2 to land at rest (12,12), its compensated corner must be (12,12).
+    // compL2 = bakeL2 + (_pcx - pcAtPivot2_x) = 12  →  bakeL2 = 12 - _pcx + pcAtPivot2_x
+    // bakeL2 = 12 + targetShiftX  →  targetShiftX = pcAtPivot2_x - _pcx
+    const [pcAtPv2_x, pcAtPv2_y] = polyScreenPos(0, 0, pvx2, pvy2, flip2Rot);
+    const targetShiftX = pcAtPv2_x - _pcx;
+    const targetDropTotal = pcAtPv2_y - _pcy;
+
+    // Roll back left — use regular STEP_SHIFT so hex lands on same marks as forward roll.
+    // Flip2 bake absorbs both X and Y gaps via jump compensation.
+    for (let i = 0; i < revSteps; i++) {
+      // Struggle — tips down
+      const durR1 = 300 + Math.random() * 40;
+      el.style.transition = `transform ${durR1}ms cubic-bezier(0.2, 0, 0.6, 1)`;
+      const pR1 = awaitTransition(el, durR1);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transform = `translateX(${shiftX - STEP_SHIFT * 0.3}px) translateY(${dropY + LIFT_Y}px) rotate(${rotation + 30}deg)`;
+      }));
+      await pR1;
+
+      // Gravity — same STEP_SHIFT as forward roll
+      shiftX -= STEP_SHIFT;
+      const revLandRot = rotation + 60;
+      const revYCorr = baseTopExtent - hexTopExtent(revLandRot);
+      const durR2 = 140 + Math.random() * 20;
+      el.style.transition = `transform ${durR2}ms cubic-bezier(0.4, 0, 1, 0.6)`;
+      const pR2 = awaitTransition(el, durR2);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transform = `translateX(${shiftX}px) translateY(${dropY + revYCorr}px) rotate(${revLandRot}deg)`;
+      }));
+      await pR2;
+
+      rotation += 60;
+      _t(`REV ${i} (rot=${rotation} shX=${shiftX.toFixed(1)})`, el);
+      await sleep(40);
+    }
+
+    // --- Flip back up at the left end ---
+    await sleep(300);
+
+    // Flip 2: bake ACTUAL position (no visual jump), flip arc, then settle residual
+    const lastRevYCorr = baseTopExtent - hexTopExtent(rotation);
+    const bakeL2 = cornerLeft + shiftX, bakeT2 = cornerTop + dropY + lastRevYCorr;
+
+    // Compute corner with jump compensation for pivot origin
+    const [pcAtPivot2_x, pcAtPivot2_y] = polyScreenPos(0, 0, pvx2, pvy2, rotation);
+    const compL2 = bakeL2 + (_pcx - pcAtPivot2_x);
+    const compT2 = bakeT2 + (_pcy - pcAtPivot2_y);
+
+    corner.style.left = compL2 + 'px';
+    corner.style.top = compT2 + 'px';
+    el.style.transition = 'none';
+    el.style.transform = `rotate(${rotation}deg)`;
+    el.style.transformOrigin = `${bestVert2[0] * 100}% ${bestVert2[1] * 100}%`;
+    // Also set up corner to transition — it will slide to (12,12) during the flip
+    corner.style.transition = 'none';
+    el.offsetHeight;
+    void corner.offsetHeight; // extra reflow: ensure browser commits setup before transition
+    // Animate flip rotation + corner slide simultaneously.
+    const flipEasing = 'cubic-bezier(0.15, 0, 0.5, 1)';
+    const flipDur = Math.min(1500, Math.round(FLIP2_ANGLE / 150 * 1000)); // scale to angle, cap at 1.5s
+    el.style.transition = `transform ${flipDur}ms ${flipEasing}`;
+    corner.style.transition = `left ${flipDur}ms ${flipEasing}, top ${flipDur}ms ${flipEasing}`;
+    const pFlip2 = awaitTransition(el, flipDur);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      rotation += FLIP2_ANGLE;
+      el.style.transform = `rotate(${rotation}deg)`;
+      // Slide corner to (12, 12) — at rotation 1080°≡0° this IS the rest position
+      corner.style.left = '12px';
+      corner.style.top = '12px';
+    }));
+    await pFlip2;
+    _t('FLIP2 done', el);
+
+    // Flip landed at rest. Clean up transitions and origin.
+    el.style.transition = 'none';
+    corner.style.transition = '';
+    el.style.transformOrigin = `${_originX}% ${_originY}%`;
+    el.style.transform = 'none';
+    corner.style.left = '';
+    corner.style.top = '';
+
+    // Fade marks
+    marksEl.style.transition = 'opacity 0.5s ease';
+    marksEl.style.opacity = '0';
+    await sleep(500);
+
+    _t('END (should match START)', el);
+    console.table(_log);
+    // Cleanup — restore exact original state
+    el.remove();
+    img.style.display = '';
+    img.style.transition = 'none';
+    img.style.transform = '';
+    img.style.opacity = '';
+    corner.style.opacity = '';
+    corner.style.pointerEvents = '';
+    corner.style.zIndex = '';
+    corner.style.left = '';
+    corner.style.top = '';
+    marksEl.remove();
+    location.hash = '#/dev-tools/portfolio-admin';
+    } catch (err) {
+      // Restore exact original state if animation fails mid-way
+      if (el) el.remove();
+      img.style.display = '';
+      img.style.transition = 'none';
+      img.style.transform = '';
+      corner.style.opacity = '';
+      corner.style.pointerEvents = '';
+      corner.style.zIndex = '';
+      corner.style.left = '';
+      corner.style.top = '';
+      if (marksEl) marksEl.remove();
+      console.warn('Logo animation failed:', err);
+    }
+  }
+
   async function main() {
     await loadTheme();
     try {
       state.data = await loadData();
     } catch { return; }
+
+    // Fixed corner logo — hover = half rotation, click = full rolling animation
+    const cornerLogo = h('a', { href: '#/dev-tools/portfolio-admin', class: 'corner-logo', title: 'devPortfolio Admin' });
+    cornerLogo.appendChild(await createLogoSvg(44));
+    let logoAnimating = false;
+    let logoHovered = false;
+    const logoImg = cornerLogo.querySelector('.logo-svg');
+    // These must match the animation constants exactly
+    const _imgW = 44;
+    const _polyW = _imgW * (215 / 221);
+    const _stepShift = _polyW / Math.sqrt(3);
+    const _hoverShift = _stepShift * 0.3;
+    const _hoverLift = _imgW * 0.15;
+
+    cornerLogo.addEventListener('mouseenter', () => {
+      if (logoAnimating) return;
+      logoHovered = true;
+      // Matches phase 1 of step 0: struggle up to tipping point (30deg → 60deg)
+      logoImg.style.transition = 'transform 350ms cubic-bezier(0.2, 0, 0.6, 1)';
+      logoImg.style.transform = `translateX(${_hoverShift}px) translateY(-${_hoverLift}px) rotate(60deg)`;
+    });
+    cornerLogo.addEventListener('mouseleave', () => {
+      if (logoAnimating) return;
+      logoHovered = false;
+      // Gravity drop back to flat (same curve as phase 2)
+      logoImg.style.transition = 'transform 200ms cubic-bezier(0.4, 0, 1, 0.6)';
+      logoImg.style.transform = '';
+    });
+    cornerLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (logoAnimating) return;
+      logoAnimating = true;
+      rollLogoAnimation(logoHovered).finally(() => { logoAnimating = false; });
+    });
+    document.body.appendChild(cornerLogo);
+
+    // Periodic nudge: 3s, 6s, 12s, then every 24s
+    (function nudgeLoop() {
+      const delays = [3000, 6000, 12000];
+      let idx = 0;
+      function doNudge() {
+        if (logoAnimating || logoHovered) {
+          schedule();
+          return;
+        }
+        logoImg.classList.add('nudge');
+        logoImg.addEventListener('animationend', () => logoImg.classList.remove('nudge'), { once: true });
+        idx++;
+        schedule();
+      }
+      function schedule() {
+        const wait = idx < delays.length ? delays[idx] : 24000;
+        setTimeout(doNudge, wait);
+      }
+      setTimeout(doNudge, delays[0]);
+    })();
 
     // Inject GoatCounter script if configured
     const gcSite = state.data?.meta?.goatcounter_site;
