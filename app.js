@@ -1830,30 +1830,37 @@
     const baseExtent = hexBottomExtent(0); // bottom extent at rest (0deg)
     const baseTopExtent = hexTopExtent(0); // top extent at rest (0deg)
 
-    // Marks container
-    let marksEl, el;
+    // Animation container — absolutely positioned at current scroll so it moves with the page
+    let animWrap, marksEl, el;
     try {
+    animWrap = document.createElement('div');
+    Object.assign(animWrap.style, {
+      position: 'absolute', top: window.scrollY + 'px', left: '0',
+      width: '100vw', height: '100vh', zIndex: '4', pointerEvents: 'none',
+    });
+    document.body.appendChild(animWrap);
+
     marksEl = document.createElement('div');
     Object.assign(marksEl.style, {
-      position: 'fixed', inset: '0', zIndex: '4', pointerEvents: 'none',
+      position: 'absolute', inset: '0', pointerEvents: 'none',
     });
-    document.body.appendChild(marksEl);
+    animWrap.appendChild(marksEl);
 
     corner.style.opacity = '1';
     corner.style.pointerEvents = 'none';
 
-    // Switch to fixed positioning on body for animation (logo is inline normally).
-    // Must be on body so z-index stacking works against marksEl (also on body).
+    // Switch to absolute positioning inside animWrap for animation.
     const cornerRect = corner.getBoundingClientRect();
     const cornerLeft = cornerRect.left;
     const cornerTop = cornerRect.top;
     const cornerParent = corner.parentNode;
     const cornerNextSibling = corner.nextSibling;
-    corner.style.position = 'fixed';
+    corner.style.position = 'absolute';
     corner.style.left = cornerLeft + 'px';
     corner.style.top = cornerTop + 'px';
     corner.style.margin = '0';
-    document.body.appendChild(corner);
+    corner.style.zIndex = '6';
+    animWrap.appendChild(corner);
 
     // Fetch SVG (cached), inject background hex polygon, inline it
     const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F7C52D';
@@ -1907,7 +1914,7 @@
       const lx = restCx + STEP_SHIFT * (padLeft + li + 1);
       const letter = document.createElement('div');
       Object.assign(letter.style, {
-        position: 'fixed',
+        position: 'absolute',
         left: lx + 'px',
         top: (groundY - imgW * 0.42) + 'px',
         fontFamily: 'var(--font-mono)',
@@ -1968,7 +1975,7 @@
 
       const mark = document.createElement('div');
       Object.assign(mark.style, {
-        position: 'fixed',
+        position: 'absolute',
         left: (cx - flatW / 2) + 'px',
         top: groundY + 'px',
         width: flatW + 'px',
@@ -2202,7 +2209,7 @@
     // Move corner back to its original DOM position
     if (cornerNextSibling) cornerParent.insertBefore(corner, cornerNextSibling);
     else cornerParent.appendChild(corner);
-    marksEl.remove();
+    animWrap.remove();
     location.hash = '#/dev-tools/portfolio-admin';
     } catch (err) {
       // Restore exact original state if animation fails mid-way
@@ -2213,7 +2220,7 @@
       corner.style.cssText = '';
       if (cornerNextSibling) cornerParent.insertBefore(corner, cornerNextSibling);
       else cornerParent.appendChild(corner);
-      if (marksEl) marksEl.remove();
+      if (animWrap) animWrap.remove();
       console.warn('Logo animation failed:', err);
     }
   }
