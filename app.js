@@ -231,10 +231,15 @@
 
   // --- Brand / header ----------------------------------------------------------
 
-  const BRAND_ASCII =
-`╔══════════════════════════════════════════════════════════╗
-║  H A R R I S O N · E N G L E    —   tools for efficiency ║
-╚══════════════════════════════════════════════════════════╝`;
+  const DEFAULT_BRAND = 'H A R R I S O N · E N G L E    —   tools for efficiency';
+  function buildBrandAscii(text) {
+    const inner = '  ' + text + ' ';
+    const w = inner.length;
+    const top = '╔' + '═'.repeat(w) + '╗';
+    const mid = '║' + inner + '║';
+    const bot = '╚' + '═'.repeat(w) + '╝';
+    return top + '\n' + mid + '\n' + bot;
+  }
 
   function getShareData() {
     const base = 'https://dudeitsharrison.github.io';
@@ -255,7 +260,7 @@
       };
     }
     return {
-      title: 'Harrison Engle — tools for efficiency',
+      title: state.data?.meta?.brand_text || 'Harrison Engle — tools for efficiency',
       text: state.data?.meta?.tagline || '',
       url: base,
     };
@@ -304,7 +309,8 @@
   function headerBlock() {
     const wrap = h('div', { class: 'header-wrap' });
     const brandLink = h('a', { href: '#/', class: 'brand-link' });
-    brandLink.appendChild(h('pre', { class: 'brand', text: BRAND_ASCII }));
+    const brandText = state.data?.meta?.brand_text || DEFAULT_BRAND;
+    brandLink.appendChild(h('pre', { class: 'brand', text: buildBrandAscii(brandText) }));
     wrap.appendChild(brandLink);
     wrap.appendChild(shareButton());
     if (state.data?.meta?.tagline) {
@@ -356,7 +362,8 @@
     l2.appendChild(l2cmd);
     l2.appendChild(h('span', { class: 'cursor', text: '█' }));
     typing.appendChild(l2);
-    await typeInto(l2cmd, 'Connected. Loading workspace...', 14);
+    const bootMsg = state.data?.meta?.boot_message || 'Connected. Loading workspace...';
+    await typeInto(l2cmd, bootMsg, 14);
     l2.querySelector('.cursor')?.remove();
 
     // Fade out boot screen
@@ -1734,7 +1741,7 @@
   }
 
   function headerBlockStatic() {
-    return h('pre', { class: 'brand', text: BRAND_ASCII });
+    return h('pre', { class: 'brand', text: buildBrandAscii(DEFAULT_BRAND) });
   }
 
   async function loadTheme() {
