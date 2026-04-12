@@ -303,7 +303,9 @@
 
   function headerBlock() {
     const wrap = h('div', { class: 'header-wrap' });
-    wrap.appendChild(h('pre', { class: 'brand', text: BRAND_ASCII }));
+    const brandLink = h('a', { href: '#/', class: 'brand-link' });
+    brandLink.appendChild(h('pre', { class: 'brand', text: BRAND_ASCII }));
+    wrap.appendChild(brandLink);
     wrap.appendChild(shareButton());
     if (state.data?.meta?.tagline) {
       wrap.appendChild(h('p', { class: 'brand-sub', text: '// ' + state.data.meta.tagline }));
@@ -318,6 +320,17 @@
     state.view = 'boot';
     clear(SCREEN);
     SCREEN.classList.add('boot');
+
+    // "Always skip" toggle in top-right
+    const skipWrap = h('label', { class: 'boot-skip-toggle' });
+    const skipCb = h('input', { type: 'checkbox' });
+    if (localStorage.getItem('skipIntro') === '1') skipCb.checked = true;
+    skipCb.addEventListener('change', () => {
+      localStorage.setItem('skipIntro', skipCb.checked ? '1' : '0');
+    });
+    skipWrap.appendChild(skipCb);
+    skipWrap.appendChild(document.createTextNode(' always skip'));
+    SCREEN.appendChild(skipWrap);
 
     // Logo + name with diagonal reveal
     const logo = h('div', { class: 'boot-logo' });
@@ -790,6 +803,9 @@
       left.appendChild(h('a', { href: `mailto:${m.contact_email}`, text: m.contact_email }));
     }
     foot.appendChild(left);
+    if (state.cornerLogo) {
+      foot.appendChild(state.cornerLogo);
+    }
     const right = h('div', {});
     if (m.github) {
       right.appendChild(h('a', { href: m.github, target: '_blank', rel: 'noopener noreferrer', text: 'github' }));
@@ -1819,6 +1835,19 @@
     corner.style.opacity = '1';
     corner.style.pointerEvents = 'none';
 
+    // Switch to fixed positioning on body for animation (logo is inline normally).
+    // Must be on body so z-index stacking works against marksEl (also on body).
+    const cornerRect = corner.getBoundingClientRect();
+    const cornerLeft = cornerRect.left;
+    const cornerTop = cornerRect.top;
+    const cornerParent = corner.parentNode;
+    const cornerNextSibling = corner.nextSibling;
+    corner.style.position = 'fixed';
+    corner.style.left = cornerLeft + 'px';
+    corner.style.top = cornerTop + 'px';
+    corner.style.margin = '0';
+    document.body.appendChild(corner);
+
     // Fetch SVG (cached), inject background hex polygon, inline it
     const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F7C52D';
     if (!_logoSvgText) _logoSvgText = await fetch('logo3.svg').then(r => r.text());
@@ -1986,7 +2015,6 @@
     const bestVert = [groundVerts[0].vxp, groundVerts[0].vyp];
 
     // All positions computed mathematically — no getBoundingClientRect errors
-    const cornerLeft = 12, cornerTop = 12;
     const lastYCorr = baseExtent - hexBottomExtent(rotation);
     const pvx1 = bestVert[0] * imgW, pvy1 = bestVert[1] * elNativeH;
 
@@ -2070,9 +2098,9 @@
     const bestVert2 = [topVerts2[0].vxp, topVerts2[0].vyp];
     const pvx2 = bestVert2[0] * imgW, pvy2 = bestVert2[1] * elNativeH;
 
-    // For flip2 to land at rest (12,12), its compensated corner must be (12,12).
-    // compL2 = bakeL2 + (_pcx - pcAtPivot2_x) = 12  →  bakeL2 = 12 - _pcx + pcAtPivot2_x
-    // bakeL2 = 12 + targetShiftX  →  targetShiftX = pcAtPivot2_x - _pcx
+    // For flip2 to land at rest (cornerLeft,cornerTop), its compensated corner must match.
+    // compL2 = bakeL2 + (_pcx - pcAtPivot2_x) = cornerLeft
+    // bakeL2 = cornerLeft + targetShiftX  →  targetShiftX = pcAtPivot2_x - _pcx
     const [pcAtPv2_x, pcAtPv2_y] = polyScreenPos(0, 0, pvx2, pvy2, flip2Rot);
     const targetShiftX = pcAtPv2_x - _pcx;
     const targetDropTotal = pcAtPv2_y - _pcy;
@@ -2123,7 +2151,7 @@
     el.style.transition = 'none';
     el.style.transform = `rotate(${rotation}deg)`;
     el.style.transformOrigin = `${bestVert2[0] * 100}% ${bestVert2[1] * 100}%`;
-    // Also set up corner to transition — it will slide to (12,12) during the flip
+    // Also set up corner to transition — it will slide to rest position during the flip
     corner.style.transition = 'none';
     el.offsetHeight;
     void corner.offsetHeight; // extra reflow: ensure browser commits setup before transition
@@ -2136,9 +2164,9 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       rotation += FLIP2_ANGLE;
       el.style.transform = `rotate(${rotation}deg)`;
-      // Slide corner to (12, 12) — at rotation 1080°≡0° this IS the rest position
-      corner.style.left = '12px';
-      corner.style.top = '12px';
+      // Slide corner back to rest position — at rotation 1080°≡0° this IS the rest position
+      corner.style.left = cornerLeft + 'px';
+      corner.style.top = cornerTop + 'px';
     }));
     await pFlip2;
     _t('FLIP2 done', el);
@@ -2148,8 +2176,6 @@
     corner.style.transition = '';
     el.style.transformOrigin = `${_originX}% ${_originY}%`;
     el.style.transform = 'none';
-    corner.style.left = '';
-    corner.style.top = '';
 
     // Fade marks
     marksEl.style.transition = 'opacity 0.5s ease';
@@ -2158,17 +2184,17 @@
 
     _t('END (should match START)', el);
     console.table(_log);
-    // Cleanup — restore exact original state
+    // Cleanup — restore exact original state (back to inline positioning).
+    // Clear all inline styles BEFORE moving back to avoid flash.
     el.remove();
     img.style.display = '';
     img.style.transition = 'none';
     img.style.transform = '';
     img.style.opacity = '';
-    corner.style.opacity = '';
-    corner.style.pointerEvents = '';
-    corner.style.zIndex = '';
-    corner.style.left = '';
-    corner.style.top = '';
+    corner.style.cssText = '';
+    // Move corner back to its original DOM position
+    if (cornerNextSibling) cornerParent.insertBefore(corner, cornerNextSibling);
+    else cornerParent.appendChild(corner);
     marksEl.remove();
     location.hash = '#/dev-tools/portfolio-admin';
     } catch (err) {
@@ -2177,11 +2203,9 @@
       img.style.display = '';
       img.style.transition = 'none';
       img.style.transform = '';
-      corner.style.opacity = '';
-      corner.style.pointerEvents = '';
-      corner.style.zIndex = '';
-      corner.style.left = '';
-      corner.style.top = '';
+      corner.style.cssText = '';
+      if (cornerNextSibling) cornerParent.insertBefore(corner, cornerNextSibling);
+      else cornerParent.appendChild(corner);
       if (marksEl) marksEl.remove();
       console.warn('Logo animation failed:', err);
     }
@@ -2193,7 +2217,8 @@
       state.data = await loadData();
     } catch { return; }
 
-    // Fixed corner logo — hover = half rotation, click = full rolling animation
+    // Corner logo — hover = half rotation, click = full rolling animation
+    // Placed inline with brand header (appended inside headerBlock via state)
     const cornerLogo = h('a', { href: '#/dev-tools/portfolio-admin', class: 'corner-logo', title: 'devPortfolio Admin' });
     cornerLogo.appendChild(await createLogoSvg(44));
     let logoAnimating = false;
@@ -2209,14 +2234,12 @@
     cornerLogo.addEventListener('mouseenter', () => {
       if (logoAnimating) return;
       logoHovered = true;
-      // Matches phase 1 of step 0: struggle up to tipping point (30deg → 60deg)
       logoImg.style.transition = 'transform 350ms cubic-bezier(0.2, 0, 0.6, 1)';
       logoImg.style.transform = `translateX(${_hoverShift}px) translateY(-${_hoverLift}px) rotate(60deg)`;
     });
     cornerLogo.addEventListener('mouseleave', () => {
       if (logoAnimating) return;
       logoHovered = false;
-      // Gravity drop back to flat (same curve as phase 2)
       logoImg.style.transition = 'transform 200ms cubic-bezier(0.4, 0, 1, 0.6)';
       logoImg.style.transform = '';
     });
@@ -2226,7 +2249,7 @@
       logoAnimating = true;
       rollLogoAnimation(logoHovered).finally(() => { logoAnimating = false; });
     });
-    document.body.appendChild(cornerLogo);
+    state.cornerLogo = cornerLogo;
 
     // Periodic nudge: 3s, 6s, 12s, then every 24s
     (function nudgeLoop() {
@@ -2260,7 +2283,8 @@
     }
 
     const hasHash = !!location.hash && location.hash !== '#' && location.hash !== '#/';
-    if (hasHash) {
+    const alwaysSkip = localStorage.getItem('skipIntro') === '1';
+    if (hasHash || alwaysSkip) {
       state.bootDone = true;
       handleRoute({ animate: false });
     } else {
