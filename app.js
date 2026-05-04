@@ -530,7 +530,10 @@
 
   function startPinnedRotation(pinnedIds) {
     stopPinnedRotation();
-    const ms = state.data.meta?.pinned_rotation_ms || 6000;
+    const baseMs = state.data.meta?.pinned_rotation_ms || 6000;
+    const ms = matchMedia('(max-width: 620px)').matches
+      ? Math.max(baseMs * 2, 9000)
+      : baseMs;
     state.pinned.rotateTimer = setInterval(() => {
       if (state.view !== 'home') return;
       if (state.pinned.locked) return;
@@ -554,6 +557,12 @@
       state.pinned.locked = false;
     }, INACTIVITY_RESUME_MS);
   }
+
+  window.addEventListener('resize', () => {
+    if (!state.data || state.view !== 'home') return;
+    const pinnedIds = (state.data.pinned || []).filter((id) => state.data.projects[id]);
+    if (pinnedIds.length > 1) startPinnedRotation(pinnedIds);
+  });
 
   // --- Folder view -------------------------------------------------------------
 
